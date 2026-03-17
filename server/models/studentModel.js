@@ -3,6 +3,12 @@ const bcrypt = require("bcryptjs");
 
 const studentSchema = new mongoose.Schema(
     {
+        adminId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Admin",
+            required: true,
+            index: true
+        },
         fullName: {
             type: String,
             required: true,
@@ -42,16 +48,6 @@ const studentSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
-
-// 🔐 PASSWORD HASHING MIDDLEWARE
-// studentSchema.pre("save", async function (next) {
-//     if (this.isModified("password")) {
-//         const salt = await bcrypt.genSalt(10);
-//         this.password = await bcrypt.hash(this.password, salt);
-//     }
-//     next();
-// });
-
 
 // 🔎 PASSWORD COMPARE METHOD (for login later)
 studentSchema.methods.comparePassword = async function (enteredPassword) {

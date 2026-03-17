@@ -26,6 +26,9 @@ app.use(express.json());
 
 // Routes
 app.use("/api/students", require("./routes/studentRoutes"));
+app.use("/api/ideas", require("./routes/ideaRoutes"));
+app.use("/api/problems", require("./routes/problemRoutes"));
+app.use("/api/admin", require("./routes/adminRoutes"));
 
 app.get('/', (req, res) => {
     res.send('Final year project (Trinetra innovation portal) website backend running...');
@@ -35,32 +38,3 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Trinetra innovation platform - Server running on port ${PORT}`);
 });
-// const express = require("express");
-// const mongoose = require("mongoose");
-// const dotenv = require("dotenv");
-// const cors = require("cors");
-// const path = require("path");
-
-// dotenv.config();
-
-// const app = express();
-
-// app.use(cors());
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-
-// // Serve uploaded images
-// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// // Routes
-// app.use("/api/students", require("./routes/studentRoutes"));
-
-// mongoose
-//     .connect(process.env.MONGO_URI)
-//     .then(() => {
-//         console.log("MongoDB Connected");
-//         app.listen(process.env.PORT, () =>
-//             console.log(`Server running on port ${process.env.PORT}`)
-//         );
-//     })
-//     .catch((err) => console.log(err));
