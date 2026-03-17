@@ -40,7 +40,7 @@ const TrinetraPlatform = () => {
                             onClick={() => navigate('/problem-statement')}
                             className="btn-primary-hero"
                         >
-                            drop your idea
+                            New innovation idea
                         </button>
                     </div>
                 </div>

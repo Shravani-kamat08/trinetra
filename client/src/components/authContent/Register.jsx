@@ -1,49 +1,108 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import api from '../../util/api';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../util/api";
 
 const Register = () => {
+
     const navigate = useNavigate();
 
+    const [step, setStep] = useState(1);
+
+    const [commonId, setCommonId] = useState("");
+
+    const [adminData, setAdminData] = useState({
+        adminId: "",
+        name: "",
+        email : " ",
+        phone : " ",
+        collegeName: ""
+    });
+
     const [formData, setFormData] = useState({
-        fullname: '',
-        classyear: '',
-        branch: '',
-        email: '',
-        phone: '',
-        dob: '',
-        password: '',
-        confirmPassword: ''
+        fullname: "",
+        classyear: "",
+        branch: "",
+        email: "",
+        phone: "",
+        dob: "",
+        password: "",
+        confirmPassword: ""
     });
 
     const [preview, setPreview] = useState("https://via.placeholder.com/80");
     const [selectedFile, setSelectedFile] = useState(null);
 
-    // handle text input
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+
+    /* STEP 1 : FETCH ADMIN */
+
+    const handleCommonIdSubmit = async (e) => {
+
+        e.preventDefault();
+
+        try {
+
+            const res = await api.post("/admin/get-admin", { commonId });
+
+            console.log(res.data)
+
+            setAdminData({
+                adminId: res.data.adminId,
+                name: res.data.name,
+                email : res.data.email,
+                phone : res.data.phone,
+                collegeName: res.data.collegeName
+            });
+
+            setStep(2);
+
+        } catch (error) {
+
+            alert("Invalid Common ID");
+
+        }
+
     };
 
-    // handle image upload
+
+    /* HANDLE INPUT */
+
+    const handleChange = (e) => {
+
+        const { name, value } = e.target;
+
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+
+    };
+
+
+    /* IMAGE UPLOAD */
+
     const handleFileChange = (e) => {
+
         const file = e.target.files[0];
 
         if (file) {
+
             setSelectedFile(file);
 
             const reader = new FileReader();
 
             reader.onloadend = () => {
-                setPreview(reader.result); // base64 string
+                setPreview(reader.result);
             };
 
             reader.readAsDataURL(file);
         }
     };
 
-    // submit form
+
+    /* FINAL REGISTER */
+
     const handleSubmit = async (e) => {
+
         e.preventDefault();
 
         if (formData.password !== formData.confirmPassword) {
@@ -52,6 +111,7 @@ const Register = () => {
         }
 
         const data = {
+            adminId: adminData.adminId,
             fullName: formData.fullname,
             classYear: formData.classyear,
             branch: formData.branch,
@@ -69,189 +129,218 @@ const Register = () => {
 
             const result = response.data;
 
-            alert(result.message || "Registration Successful!");
+            localStorage.setItem("userId", result.student.id);
+            localStorage.setItem("userMode", "student");
 
-            navigate("/login");
+            alert("Registration Successful");
+
+            navigate("/dashboard");
 
         } catch (error) {
 
-            console.error(error);
+            alert(error.response?.data?.message || "Registration Failed");
 
-            alert(error.response?.data?.message || "Something went wrong");
         }
+
     };
 
+
     return (
-        <>
-            <div className="container">
 
-                <div className="step-indicator">
-                    <Link to="/login" className="step">1</Link>
-                    <div className="line"></div>
-                    <Link to="/register" className="step active">2</Link>
-                </div>
+        <div className="container">
 
-                <h2>Student Registration</h2>
+            <h2>Student Registration</h2>
 
-                <form id="registerForm" onSubmit={handleSubmit}>
 
-                    <div className="profile-upload">
-                        <div className="avatar-preview">
-                            <img
-                                id="imagePreview"
-                                src={preview}
-                                alt="Profile"
-                                style={{
-                                    width: '80px',
-                                    height: '80px',
-                                    borderRadius: '50%',
-                                    objectFit: 'cover'
-                                }}
-                            />
-                        </div>
+            {/* STEP 1 : COMMON ID */}
 
-                        <span className="upload-hint">
-                            upload only identity size image
-                        </span>
+            {step === 1 && (
 
-                        <label htmlFor="profilePic" className="upload-label">
-                            Upload Photo
-                        </label>
+                <form onSubmit={handleCommonIdSubmit}>
+
+                    <div className="input-group">
+
+                        <label>Enter College Common ID</label>
 
                         <input
-                            type="file"
-                            id="profilePic"
-                            name="profilePic"
-                            accept="image/*"
-                            hidden
-                            onChange={handleFileChange}
+                            type="text"
+                            placeholder="example: adscoe-rohit-1234"
+                            value={commonId}
+                            onChange={(e) => setCommonId(e.target.value)}
+                            required
                         />
-                    </div>
-
-                    <div className="form-grid">
-
-                        <div className="input-group">
-                            <label>Full Name</label>
-                            <input
-                                type="text"
-                                name="fullname"
-                                placeholder="Enter your name"
-                                id="fullname"
-                                pattern="[A-Za-z\s]+"
-                                required
-                                value={formData.fullname}
-                                onChange={handleChange}
-                            />
-                        </div>
-
-                        <div className="input-row">
-
-                            <div className="input-group">
-                                <label>Class / Year</label>
-                                <input
-                                    type="text"
-                                    name="classyear"
-                                    placeholder="e.g. Final Year"
-                                    id="classyear"
-                                    required
-                                    value={formData.classyear}
-                                    onChange={handleChange}
-                                />
-                            </div>
-
-                            <div className="input-group">
-                                <label>Branch</label>
-                                <input
-                                    type="text"
-                                    name="branch"
-                                    placeholder="eg. CSE"
-                                    id="branch"
-                                    required
-                                    value={formData.branch}
-                                    onChange={handleChange}
-                                />
-                            </div>
-
-                        </div>
-
-                        <div className="input-group">
-                            <label>Email</label>
-                            <input
-                                type="email"
-                                name="email"
-                                placeholder="example@gmail.com"
-                                required
-                                value={formData.email}
-                                onChange={handleChange}
-                            />
-                        </div>
-
-                        <div className="input-group">
-                            <label>Phone Number</label>
-                            <input
-                                type="tel"
-                                name="phone"
-                                placeholder="10 Digit Number"
-                                id="phone"
-                                maxLength="10"
-                                pattern="[0-9]{10}"
-                                required
-                                value={formData.phone}
-                                onChange={handleChange}
-                            />
-                        </div>
-
-                        <div className="input-group">
-                            <label>Date of Birth</label>
-                            <input
-                                type="date"
-                                name="dob"
-                                required
-                                value={formData.dob}
-                                onChange={handleChange}
-                            />
-                        </div>
-
-                        <div className="input-group">
-                            <label>Password</label>
-                            <input
-                                type="password"
-                                name="password"
-                                id="password"
-                                minLength="8"
-                                required
-                                value={formData.password}
-                                onChange={handleChange}
-                            />
-                        </div>
-
-                        <div className="input-group">
-                            <label>Confirm Password</label>
-                            <input
-                                type="password"
-                                name="confirmPassword"
-                                id="confirmPassword"
-                                required
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
-                            />
-                        </div>
 
                     </div>
 
                     <button type="submit" className="register-btn">
-                        Create Account
+                        Continue
                     </button>
-
-                    <p className="login-link">
-                        Already have an account? <Link to="/login">Login</Link>
-                    </p>
 
                 </form>
 
-            </div>
-        </>
+            )}
+
+
+            {/* STEP 2 : REGISTER FORM */}
+
+            {step === 2 && (
+                <form onSubmit={handleSubmit}>
+
+                    {/* ADMIN INFO */}
+                    <div
+                        style={{
+                            background: "#f4f6ff",
+                            padding: "10px",
+                            marginBottom: "20px",
+                            borderRadius: "8px"
+                        }}
+                    >
+
+                        <h3>Name : {adminData.name}</h3>
+                        <p>College : {adminData.collegeName}</p>
+                        <p>Email ID :{adminData.email}</p>
+                        <p>Contact No. : {adminData.phone}</p>
+                    </div>
+
+
+                    {/* PROFILE IMAGE */}
+
+                    <div className="profile-upload">
+
+                        <div className="avatar-preview">
+                            <img
+                                src={preview}
+                                alt="Profile"
+                                style={{
+                                    width: "80px",
+                                    height: "80px",
+                                    borderRadius: "50%"
+                                }}
+                            />
+                        </div>
+
+                        <label htmlFor="profilePic">Upload Photo</label>
+
+                        <input
+                            type="file"
+                            hidden
+                            id="profilePic"
+                            onChange={handleFileChange}
+                        />
+
+                    </div>
+
+
+                    {/* STUDENT FORM */}
+
+                    <div className="input-group">
+                        <label>Full Name</label>
+                        <input
+                            type="text"
+                            name="fullname"
+                            required
+                            value={formData.fullname}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="input-row">
+
+                        <div className="input-group">
+                            <label>Class / Year</label>
+                            <input
+                                type="text"
+                                name="classyear"
+                                required
+                                value={formData.classyear}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="input-group">
+                            <label>Branch</label>
+                            <input
+                                type="text"
+                                name="branch"
+                                required
+                                value={formData.branch}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                    </div>
+
+                    <div className="input-group">
+                        <label>Email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            required
+                            value={formData.email}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="input-group">
+                        <label>Phone</label>
+                        <input
+                            type="tel"
+                            name="phone"
+                            required
+                            value={formData.phone}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="input-group">
+                        <label>Date of Birth</label>
+                        <input
+                            type="date"
+                            name="dob"
+                            required
+                            value={formData.dob}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="input-group">
+                        <label>Password</label>
+                        <input
+                            type="password"
+                            name="password"
+                            required
+                            value={formData.password}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="input-group">
+                        <label>Confirm Password</label>
+                        <input
+                            type="password"
+                            name="confirmPassword"
+                            required
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <button type="submit" className="register-btn">
+                        Register
+                    </button>
+
+                </form>
+
+            )}
+
+            <p className="login-link">
+                Already have an account? <Link to="/login">Login</Link>
+            </p>
+
+        </div>
+
     );
+
 };
 
 export default Register;

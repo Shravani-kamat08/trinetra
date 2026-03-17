@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './loginRegister.css';
 import { Link, useNavigate } from 'react-router-dom';
+import api from '../../util/api';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -18,21 +19,42 @@ const Login = () => {
     };
 
     // --- 2. FORM SUBMISSION ---
-    const handleLoginSubmit = (e) => {
+    const handleLoginSubmit = async (e) => {
         e.preventDefault();
 
         setMessageText("Authenticating... Please wait.");
         setMessageColor("#2563eb");
 
-        setTimeout(() => {
-            setMessageText("Login successful! Redirecting to Dashboard...");
+        try {
+
+            const response = await api.post("/students/login", {
+                email: email,
+                password: password
+            });
+
+            const result = response.data;
+
+            // ✅ STORE USER ID IN LOCAL STORAGE
+            localStorage.setItem("userId", result.student.id);
+            localStorage.setItem("userMode ", "student");
+
+            setMessageText(result.message || "Login successful! Redirecting to Dashboard...");
             setMessageColor("#16a34a");
 
             setEmail("");
             setPassword("");
 
+            navigate('/dashboard');
             // setTimeout(() => navigate('/dashboard'), 1500);
-        }, 1500);
+
+        } catch (error) {
+
+            console.error(error);
+
+            setMessageText(error.response?.data?.message || "Login failed");
+            setMessageColor("#dc2626");
+        }
+
     };
 
     // --- 3. SOCIAL LOGIN HANDLER ---
@@ -44,7 +66,6 @@ const Login = () => {
     return (
         <div className="login-box container">
             <div className="step-indicator">
-                {/* Step 1 is active for login */}
                 <Link to="/login" className="step active">1</Link>
                 <div className="line"></div>
                 <Link to="/register" className="step">2</Link>
@@ -105,7 +126,6 @@ const Login = () => {
 
                 <button type="submit">Login</button>
 
-                {/* Dynamic message */}
                 <p id="loginMessage" style={{ color: messageColor }}>
                     {messageText}
                 </p>
