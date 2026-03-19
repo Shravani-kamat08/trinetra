@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import "./AdminDashboard.css";
 import Sidebar from "./Sidebar";
@@ -6,11 +6,14 @@ import Navbar from "./Navbar";
 import DashboardCards from "./DashboardCards";
 import UploadStatement from "./UploadStatement";
 import ViewIdeas from "./ViewIdeas";
+import api from "../../util/api"
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
+    const adminId = localStorage.getItem('userId')
 
     const [activeSection, setActiveSection] = useState("dashboard");
+    const [adminData, setAdminData] = useState(null);
 
     const [ideas, setIdeas] = useState([]);
 
@@ -25,6 +28,15 @@ const AdminDashboard = () => {
     const [rejected, setRejected] = useState(0);
 
     const [showSuccess, setShowSuccess] = useState(false);
+
+    useEffect(()=>{
+        const fetchAdmin = async (id) =>{
+            const res = await api.get(`/admin/${id}`)
+            setAdminData(res.data.data)
+        }
+
+        fetchAdmin(adminId)
+    }, [])
 
     const toggleSidebar = () => {
         document.getElementById("sidebar").classList.toggle("collapsed");
@@ -80,7 +92,7 @@ const AdminDashboard = () => {
 
             <div className="main" id="main">
 
-                <Navbar toggleSidebar={toggleSidebar} />
+                <Navbar toggleSidebar={toggleSidebar} adminData={adminData}/>
 
                 <div className="content">
 

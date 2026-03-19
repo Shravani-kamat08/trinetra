@@ -2,7 +2,6 @@ const Idea = require("../models/ideaModel");
 
 exports.submitIdea = async (req, res) => {
     try {
-
         const {
             students,
             studentId,
