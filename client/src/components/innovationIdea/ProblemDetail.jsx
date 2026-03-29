@@ -3,33 +3,28 @@ import { useNavigate } from 'react-router-dom';
 import './problemDetail.css';
 import api from '../../util/api';
 
-const ProblemDetail = ({ student,  admin }) => {
-    console.log(admin)
+const ProblemDetail = ({ student, admin, setProblem }) => {
+    console.log(student, admin)
     const navigate = useNavigate();
     const [data, setData] = useState(null);
 
     useEffect(() => {
-
         const getProblem = async (adminId) => {
-
             try {
-
                 const res = await api.get(`/problems/admin/${adminId}`);
-
                 if (res.data.success && res.data.data.length > 0) {
+                    setProblem(res.data.data[0])
                     setData(res.data.data[0]);
                 }
-
             } catch (error) {
                 console.log("Problem fetch error:", error);
             }
-
         };
 
         if (student?.adminId) {
             getProblem(student.adminId);
         }else{
-            getProblem(admin._id)
+            getProblem(admin?._id)
         }
 
     }, [student]);

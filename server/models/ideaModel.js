@@ -89,6 +89,17 @@ const ideaSchema = new mongoose.Schema(
         file: {
             type: String,
         },
+
+        approvedStatus: {
+            type: String,
+            enum: ["approved", "drop", "reject", "starIdea"],
+            default: "drop",
+        },
+
+        rating : {
+            type : Number,
+            dafualt : 0
+        }
     },
     { timestamps: true },
 );

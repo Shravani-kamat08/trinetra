@@ -33,7 +33,8 @@ const UploadStatement = () => {
             image,
             description,
             startDate,
-            endDate
+            endDate,
+            adminId : localStorage.getItem('userId')
         };
 
         try {
@@ -41,7 +42,7 @@ const UploadStatement = () => {
             const response = await api.post("/problems/create", problemData);
 
 
-            const data = await response.json();
+            const data = await response.data;
 
             if (data.success) {
 

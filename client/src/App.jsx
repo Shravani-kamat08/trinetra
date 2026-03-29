@@ -16,6 +16,7 @@ import api from "./util/api";
 function App() {
   const [student, setStudent] = useState(null);
   const [admin, setAdmin] = useState(null)
+  const [problem, setProblem] = useState(null);
 
   useEffect(() => {
     const adminId = localStorage.getItem('userId')
@@ -70,10 +71,9 @@ function App() {
         <Route element={<ProtectRoute />}>
 
           <Route path="/dashboard" element={<TrinetraPlatform />} />
-          <Route path="/problem-statement" element={<ProblemDetail student={student} admin={admin} />} />
+          <Route path="/problem-statement" element={<ProblemDetail student={student} admin={admin} setProblem={setProblem} />} />
           <Route path="/trinetra-platform" element={<TrinetraPlatform />} />
-          <Route path="/idea-submission" element={<IdeaSubmissionForm student={student} />} />
-
+          <Route path="/idea-submission" element={<IdeaSubmissionForm student={student} problem={problem} />} />
         </Route>
 
         <Route path="/login" element={<Login />} />

@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import './IdeaSubmissionForm.css'
 import api from '../../util/api';
 
-const IdeaSubmissionForm = ({ student }) => {
+const IdeaSubmissionForm = ({ student, problem }) => {
     const navigate = useNavigate();
 
     const userMode = localStorage.getItem("userMode ")
-    console.log(userMode)
+    console.log(userMode, student)
+    console.log("problem : ", problem)
 
     const [currentStep, setCurrentStep] = useState(1);
     const [showModal, setShowModal] = useState(false);
@@ -98,46 +99,33 @@ const IdeaSubmissionForm = ({ student }) => {
         }
 
         try {
-
             const payload = {
+                problemId : problem._id,
+                studentId: student?._id,
                 students: students.map(({ id, ...rest }) => rest),
                 ...projectData
             };
-
             if (file) {
-
                 const reader = new FileReader();
-
                 reader.onloadend = async () => {
-
                     payload.file = reader.result;
-
                     await api.post("/ideas/submit", payload);
-
                     setShowModal(true);
                 };
-
                 reader.readAsDataURL(file);
-
             } else {
-
                 await api.post("/ideas/submit", payload);
-
                 setShowModal(true);
             }
-
         } catch (error) {
-
             console.error(error);
-
             alert(error.response?.data?.message || "Submission failed");
-
         }
     };
 
     const closeModal = () => {
         setShowModal(false);
-        navigate(0);
+        navigate("/dashboard")
     };
 
     const progressPercent = ((currentStep - 1) / 2) * 100;
@@ -159,41 +147,27 @@ const IdeaSubmissionForm = ({ student }) => {
     return (
 
         <div className="idea-submission-page">
-
             <div className="main">
-
                 <div className="container">
-
                     <h2>Idea Submission Form</h2>
-
                     <div className="progress-container">
-
                         <div
                             className="progress-bar"
                             style={{ width: `${progressPercent}%` }}
                         ></div>
-
                         <div className="steps">
                             <div className={`step-node ${currentStep >= 1 ? 'active' : ''}`}>1</div>
                             <div className={`step-node ${currentStep >= 2 ? 'active' : ''}`}>2</div>
                             <div className={`step-node ${currentStep >= 3 ? 'active' : ''}`}>3</div>
                         </div>
-
                     </div>
-
                     <form id="ideaForm" onSubmit={handleSubmit}>
-
                         {/* STEP 1 */}
                         <div className={`form-step ${currentStep === 1 ? 'active' : ''}`} id="step1">
-
                             <div className="section-title">Step 1: Student Details (Min 1 - Max 3)</div>
-
                             <div id="studentsContainer">
-
                                 {students.map((studentItem, index) => (
-
                                     <div className="student-box" key={studentItem.id}>
-
                                         {index > 0 && (
                                             <button
                                                 type="button"
@@ -203,9 +177,7 @@ const IdeaSubmissionForm = ({ student }) => {
                                                 Cancel
                                             </button>
                                         )}
-
                                         <label>Student Name <span className="required">*</span></label>
-
                                         <input
                                             type="text"
                                             required
@@ -215,9 +187,7 @@ const IdeaSubmissionForm = ({ student }) => {
                                                 updateStudent(studentItem.id, 'name', e.target.value)
                                             }
                                         />
-
                                         <label>Email <span className="required">*</span></label>
-
                                         <input
                                             type="email"
                                             required
@@ -227,9 +197,7 @@ const IdeaSubmissionForm = ({ student }) => {
                                                 updateStudent(studentItem.id, 'email', e.target.value)
                                             }
                                         />
-
                                         <label>Department <span className="required">*</span></label>
-
                                         <input
                                             type="text"
                                             required
@@ -239,9 +207,7 @@ const IdeaSubmissionForm = ({ student }) => {
                                                 updateStudent(studentItem.id, 'dept', e.target.value)
                                             }
                                         />
-
                                         <label>Year of Study <span className="required">*</span></label>
-
                                         <select
                                             required
                                             value={studentItem.year}
@@ -256,13 +222,10 @@ const IdeaSubmissionForm = ({ student }) => {
                                             <option>Third Year</option>
                                             <option>Final Year</option>
                                         </select>
-
                                     </div>
-
                                 ))}
 
                             </div>
-
                             <button
                                 type="button"
                                 className="add-btn"
@@ -270,9 +233,7 @@ const IdeaSubmissionForm = ({ student }) => {
                             >
                                 + Add Student
                             </button>
-
                             <div className="step-navigation">
-
                                 <button
                                     type="button"
                                     className="next-btn"
@@ -280,44 +241,31 @@ const IdeaSubmissionForm = ({ student }) => {
                                 >
                                     Next Step
                                 </button>
-
                             </div>
-
                         </div>
 
                         {/* STEP 2 */}
-
                         <div className={`form-step ${currentStep === 2 ? 'active' : ''}`} id="step2">
-
                             <div className="section-title">Step 2: Project Details</div>
-
                             <label>Idea Title (Max 100 words) *</label>
-
                             <textarea
                                 required
                                 value={projectData.title}
                                 onChange={(e) => {
-
                                     const words = e.target.value.trim().split(/\s+/);
-
                                     if (words.length <= 100) {
-
                                         setProjectData({
                                             ...projectData,
                                             title: e.target.value
                                         });
-
                                     }
-
                                 }}
                             />
 
                             <div className="note">
                                 {getWordCount(projectData.title)} / 100 words
                             </div>
-
                             <label>Project Category *</label>
-
                             <select
                                 required
                                 value={projectData.category}
@@ -338,7 +286,6 @@ const IdeaSubmissionForm = ({ student }) => {
                             </select>
 
                             <label>Project Type *</label>
-
                             <select
                                 required
                                 value={projectData.type}
@@ -354,9 +301,8 @@ const IdeaSubmissionForm = ({ student }) => {
                                 <option>Software</option>
                                 <option>Hybrid</option>
                             </select>
-
+{/* 
                             <label>Problem Statement *</label>
-
                             <textarea
                                 required
                                 value={projectData.problemStatement}
@@ -366,7 +312,7 @@ const IdeaSubmissionForm = ({ student }) => {
                                         problemStatement: e.target.value
                                     })
                                 }
-                            />
+                            /> */}
 
                             <div className="step-navigation">
 

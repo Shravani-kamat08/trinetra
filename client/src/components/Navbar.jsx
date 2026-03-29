@@ -43,6 +43,10 @@ const Navbar = ({ student, admin }) => {
             <nav className={menuOpen ? "active" : ""}>
                 <ul>
 
+                    {userMode == "Admin" && <li>
+                        <Link to="/admin-dashboard">Admin dashboard</Link>
+                    </li> }
+
                     <li>
                         <Link to="/dashboard">Home</Link>
                     </li>
