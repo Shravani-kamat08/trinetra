@@ -156,6 +156,7 @@
 .nav-center .admin-title {
     font-size: 1.1rem;
     margin: 0;
+    text-transform: capitalize;
     color: #2c3e50;
     font-weight: 600;
 }

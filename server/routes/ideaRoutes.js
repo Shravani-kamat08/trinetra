@@ -7,7 +7,8 @@ const {
     getIdeasByStudentId,
     getIdeasByProblemId,
     countDroppedIdeasByProblemId,
-    updateIdeaStatus
+    updateIdeaStatus,
+    addManualMarksAndRank
 } = require("../controllers/ideaController");
 
 
@@ -33,6 +34,9 @@ router.get("/problem/:problemId/dropped-count", countDroppedIdeasByProblemId);
 
 // ✅ UPDATE APPROVAL STATUS
 router.put("/status/:id", updateIdeaStatus);
+
+// ✅ ADD MANUAL MARKS + UPDATE RATING + RANK
+router.put("/manual-marks/:id", addManualMarksAndRank);
 
 
 module.exports = router;

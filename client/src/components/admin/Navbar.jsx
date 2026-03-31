@@ -26,7 +26,7 @@ const Navbar = ({ toggleSidebar, adminData }) => {
             </div>
 
             <div className="nav-center">
-                <h1 className="admin-title">Name: {adminData.name}</h1>
+                <h1 className="admin-title"> {adminData.name}</h1>
             </div>
 
             <div className="nav-right">

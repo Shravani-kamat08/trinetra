@@ -55,7 +55,6 @@ exports.submitIdea = async (req, res) => {
         });
 
         await newIdea.save();
-
         res.status(201).json({
             success: true,
             message: "Idea submitted successfully",
@@ -190,5 +189,77 @@ exports.updateIdeaStatus = async (req, res) => {
 
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// ✅ ADD MANUAL MARKS + CALCULATE TOTAL SCORE + RATING + RANK
+exports.addManualMarksAndRank = async (req, res) => {
+    try {
+        const { marks } = req.body;
+
+        if (!marks || !Array.isArray(marks)) {
+            return res.status(400).json({
+                success: false,
+                message: "Marks must be an array"
+            });
+        }
+
+        const idea = await Idea.findById(req.params.id);
+
+        if (!idea) {
+            return res.status(404).json({
+                success: false,
+                message: "Idea not found"
+            });
+        }
+
+        // ✅ Store manual marks (array)
+        idea.manualMarks = marks;
+
+        // ✅ Step 1: sum all elements of manualMarks array
+        const manualTotal = marks.reduce((sum, value) => {
+            return sum + Number(value || 0);
+        }, 0);
+
+        // ✅ Step 2: get autoPoints
+        const autoScore = Number(idea.autoPoints || 0);
+
+        // ✅ Step 3: final totalScore
+        const totalScore = manualTotal + autoScore;
+
+        // ✅ Store totalScore (single number)
+        idea.totalScore = totalScore;
+
+        // ✅ Convert to 5-star rating
+        let rating = (totalScore / 100) * 5;
+        rating = Math.min(5, Math.max(0, rating));
+        idea.rating = Math.round(rating * 10) / 10;
+
+        await idea.save();
+
+        // ✅ UPDATED: Rank ONLY approved ideas
+        const ideas = await Idea.find({
+            problemId: idea.problemId,
+            approvedStatus: "approved"
+        }).sort({ rating: -1 });
+
+        for (let i = 0; i < ideas.length; i++) {
+            ideas[i].rank = i + 1;
+            await ideas[i].save();
+        }
+
+        res.json({
+            success: true,
+            message: "Total score calculated and stored (ranking only for approved ideas)",
+            totalScore,
+            idea
+        });
+
+    } catch (error) {
+        console.error("Manual Marks Error:", error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 };

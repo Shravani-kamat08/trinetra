@@ -7,6 +7,7 @@ import DashboardCards from "./DashboardCards";
 import UploadStatement from "./UploadStatement";
 import ViewIdeas from "./ViewIdeas";
 import api from "../../util/api"
+import IdeaModal from "./IdeaModal";
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -16,7 +17,9 @@ const AdminDashboard = () => {
     const [adminData, setAdminData] = useState(null);
     const [problemData, setProblemData] = useState([]);
 
-    const [selectedProblemId, setSelectedProblemId] = useState(null); // ✅ NEW
+    const [selectedProblemId, setSelectedProblemId] = useState(null);
+    const [selectedIdea, setSelectedIdea] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     const [ideas, setIdeas] = useState([]);
     const [filteredIdeas, setFilteredIdeas] = useState([]);
@@ -144,18 +147,18 @@ const AdminDashboard = () => {
                 <div className="content">
 
                     {/* ✅ PROBLEM SELECT */}
-                    {(activeSection === "dashboard" || activeSection === "view") && 
-                    <select
-                        className="problemSelector"
-                        value={selectedProblemId || ""}
-                        onChange={(e) => setSelectedProblemId(e.target.value)}
-                    >
-                        {problemData.map((prob, index) => (
-                            <option key={prob._id} value={prob._id}>
-                                {prob.title || `Problem ${index + 1}`}
-                            </option>
-                        ))}
-                    </select>
+                    {(activeSection === "dashboard" || activeSection === "view") &&
+                        <select
+                            className="problemSelector"
+                            value={selectedProblemId || ""}
+                            onChange={(e) => setSelectedProblemId(e.target.value)}
+                        >
+                            {problemData.map((prob, index) => (
+                                <option key={prob._id} value={prob._id}>
+                                    {prob.title || `Problem ${index + 1}`}
+                                </option>
+                            ))}
+                        </select>
                     }
 
                     {activeSection === "dashboard" && (
@@ -177,7 +180,7 @@ const AdminDashboard = () => {
                                             <tr>
                                                 <th>Idea Title</th>
                                                 <th>First Student</th>
-                                                <th>Rating</th>
+                                                <th>Total mark</th>
                                                 <th>Options</th>
                                             </tr>
                                         </thead>
@@ -192,12 +195,19 @@ const AdminDashboard = () => {
 
                                                         <td>
                                                             <span className="rating-badge">
-                                                                {idea.rating || 0}
+                                                                {idea?.totalScore|| 0}
                                                             </span>
                                                         </td>
 
                                                         <td>
-                                                            <button className="icon-btn view-btn" title="View">
+                                                            <button
+                                                                className="icon-btn view-btn"
+                                                                title="View"
+                                                                onClick={() => {
+                                                                    setSelectedIdea(idea);
+                                                                    setShowModal(true);
+                                                                }}
+                                                            >
                                                                 <i className="fa fa-eye"></i>
                                                             </button>
 
@@ -257,6 +267,13 @@ const AdminDashboard = () => {
 
             </div>
 
+            {showModal && (
+                <IdeaModal
+                    idea={selectedIdea}
+                    onClose={() => setShowModal(false)}
+                    updateStatus={updateStatus}
+                />
+            )}
         </div>
 
     );
