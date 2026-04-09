@@ -263,3 +263,55 @@ exports.addManualMarksAndRank = async (req, res) => {
         });
     }
 };
+
+// like or unlike an idea
+exports.toggleLike = async (req, res) => {
+    try {
+        const idea = await Idea.findById(req.params.id);
+
+        if (!idea) {
+            return res.status(404).json({
+                success: false,
+                message: "Idea not found"
+            });
+        }
+
+        idea.likeStamp = !idea.likeStamp;
+        await idea.save();
+        res.json({
+            success: true,
+            message: idea.likeStamp ? "Idea liked" : "Idea unliked",
+            likeStamp: idea.likeStamp
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// delete an idea
+exports.deleteIdea = async (req, res) => {
+    try {
+        const idea = await Idea.findByIdAndDelete(req.params.id);
+
+        if (!idea) {
+            return res.status(404).json({
+                success: false,
+                message: "Idea not found"
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Idea deleted successfully"
+        });
+
+    }catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+}

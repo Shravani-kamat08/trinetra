@@ -20,6 +20,11 @@ const Sidebar = ({ setActiveSection, logout }) => {
                     <span>Upload Statement</span>
                 </li>
 
+                <li onClick={() => setActiveSection("students")}>
+                    <i className="fa fa-users"></i>
+                    <span>View Students</span>
+                </li>
+
                 <li onClick={() => setActiveSection("view")}>
                     <i className="fa fa-folder"></i>
                     <span>View Saved</span>

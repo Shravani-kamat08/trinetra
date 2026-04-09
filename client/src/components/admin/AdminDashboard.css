@@ -1,3 +1,10 @@
+.liked-idea {
+    color: red;
+    transition: transform 0.2s;
+}
+
+
+
 /* Sidebar */
 
 .sidebar {
@@ -435,7 +442,7 @@ tr:hover {
     background: #fff;
     padding: 15px;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 /* ✅ Table */
@@ -513,6 +520,7 @@ tr:hover {
 .view-btn {
     background: #3498db;
 }
+
 .view-btn:hover {
     background: #2980b9;
 }
@@ -521,6 +529,7 @@ tr:hover {
 .approve-btn {
     background: #2ecc71;
 }
+
 .approve-btn:hover {
     background: #27ae60;
 }
@@ -529,6 +538,7 @@ tr:hover {
 .reject-btn {
     background: #f39c12;
 }
+
 .reject-btn:hover {
     background: #d68910;
 }
@@ -537,6 +547,7 @@ tr:hover {
 .delete-btn {
     background: #e74c3c;
 }
+
 .delete-btn:hover {
     background: #c0392b;
 }

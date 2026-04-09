@@ -8,7 +8,9 @@ const {
     getIdeasByProblemId,
     countDroppedIdeasByProblemId,
     updateIdeaStatus,
-    addManualMarksAndRank
+    addManualMarksAndRank,
+    toggleLike,
+    deleteIdea
 } = require("../controllers/ideaController");
 
 
@@ -37,6 +39,12 @@ router.put("/status/:id", updateIdeaStatus);
 
 // ✅ ADD MANUAL MARKS + UPDATE RATING + RANK
 router.put("/manual-marks/:id", addManualMarksAndRank);
+
+// ✅ LIKE OR UNLIKE AN IDEA
+router.put("/like/:id", toggleLike)
+
+// ✅ DELETE AN IDEA
+router.delete("/:id", deleteIdea);
 
 
 module.exports = router;

@@ -8,7 +8,7 @@ const Navbar = ({ student, admin }) => {
     const [profileOpen, setProfileOpen] = useState(false);
 
     const userId = localStorage.getItem("userId");
-    const userMode = localStorage.getItem("userMode ");
+    const userMode = localStorage.getItem("userMode");
 
     console.log(userId, userMode)
 
@@ -45,11 +45,15 @@ const Navbar = ({ student, admin }) => {
 
                     {userMode == "Admin" && <li>
                         <Link to="/admin-dashboard">Admin dashboard</Link>
-                    </li> }
+                    </li>}
 
                     <li>
                         <Link to="/dashboard">Home</Link>
                     </li>
+
+                    {userMode == "student" && <li>
+                        <Link to="/student-dashboard">Dashboard</Link>
+                    </li>}
 
                     <li>
                         <a href="#trinetra">About Trinetra</a>

@@ -1,6 +1,10 @@
 const Student = require("../models/studentModel");
 const bcrypt = require("bcryptjs");
 
+const Idea = require("../models/ideaModel");
+const Problem = require("../models/ProblemStatement");
+const Admin = require("../models/admin");
+
 exports.registerStudent = async (req, res) => {
     try {
 
@@ -279,4 +283,100 @@ exports.deleteStudent = async (req, res) => {
 
     }
 
+};
+
+exports.getStudentDashboard = async (req, res) => {
+    try {
+        const { studentId } = req.params;
+
+        // ✅ Get student
+        const student = await Student.findById(studentId);
+
+        if (!student) {
+            return res.status(404).json({ success: false, message: "Student not found" });
+        }
+
+        // ✅ Get ideas of student (ONLY dropped)
+        const ideas = await Idea.find({
+            studentId
+        }).populate("problemId");
+
+        // ✅ Get admin
+        const admin = await Admin.findById(student.adminId).select("-password");
+
+        res.json({
+            success: true,
+            student,
+            admin,
+            ideas
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+}
+
+exports.changePassword = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { oldPassword , newPassword } = req.body;
+
+
+        // ✅ Validate input
+        if (!oldPassword || !newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Old and new password are required"
+            });
+        }
+
+        // ✅ Find student
+        const student = await Student.findById(id);
+
+        if (!student) {
+            return res.status(404).json({
+                success: false,
+                message: "Student not found"
+            });
+        }
+
+        // ✅ Compare old password
+        const isMatch = await bcrypt.compare(oldPassword, student.password);
+
+        if (!isMatch) {
+            return res.status(400).json({
+                success: false,
+                message: "Old password incorrect"
+            });
+        }
+
+        // ✅ Prevent same password reuse (optional but good)
+        const isSame = await bcrypt.compare(newPassword, student.password);
+        if (isSame) {
+            return res.status(400).json({
+                success: false,
+                message: "New password cannot be same as old password"
+            });
+        }
+
+        // ✅ Hash new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10); //await bcrypt.hash(password, 10)
+
+        // ✅ Update password
+        student.password = hashedPassword;
+        await student.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Password updated successfully"
+        });
+
+    } catch (err) {
+        console.error("Change Password Error:", err);
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        });
+    }
 };

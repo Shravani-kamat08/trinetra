@@ -15,6 +15,7 @@ const AdminDashboard = () => {
 
     const [activeSection, setActiveSection] = useState("dashboard");
     const [adminData, setAdminData] = useState(null);
+    const [studentsByAdmin, setStudentsByAdmin] = useState([]);
     const [problemData, setProblemData] = useState([]);
 
     const [selectedProblemId, setSelectedProblemId] = useState(null);
@@ -40,11 +41,14 @@ const AdminDashboard = () => {
         const fetchAdmin = async () => {
             const res = await api.get(`/admin/${adminId}`);
             const prob = await api.get(`/problems/admin/${adminId}`);
+            const stud = await api.get(`/students/admin/${adminId}`)
 
-            const problems = prob.data.data || [];
+            const problems = prob.data.data || [];  
+            console.log(stud.data.students)
 
             setProblemData(problems);
             setAdminData(res.data.data);
+            setStudentsByAdmin(stud.data.students || []);
 
             // ✅ set default selected problem (first one)
             if (problems.length > 0) {
@@ -74,6 +78,27 @@ const AdminDashboard = () => {
             console.error("Error fetching ideas:", error);
         }
     };
+
+    const likeIdea = (ideaId) => async () => {
+        try {
+            const res = await api.put(`/ideas/like/${ideaId}`);
+            // Update the UI to reflect the like
+            console.log("Liked idea:", res.data);
+            fetchIdeas();
+        } catch (error) {
+            console.error("Error liking idea:", error);
+        }
+    }
+
+    const deleteIdea = (ideaId) => async () => {
+        try {
+            const res = await api.delete(`/ideas/${ideaId}`);
+            alert(res.data.message);
+            fetchIdeas();
+        } catch (error) {
+            console.error("Error deleting idea:", error);
+        }
+    }
 
     useEffect(() => {
         fetchIdeas();
@@ -231,7 +256,21 @@ const AdminDashboard = () => {
                                                                 </button>
                                                             )}
 
-                                                            <button className="icon-btn delete-btn" title="Delete">
+                                                            {/* {idea.likeStamp != true && ( */}
+                                                                <button
+                                                                    className="icon-btn like-btn"
+                                                                    title="Like"
+                                                                    onClick={likeIdea(idea._id)}
+                                                                >
+                                                                    {idea.likeStamp ? (
+                                                                        <i className="fa fa-heart liked-idea"></i>
+                                                                    ) : (
+                                                                    <i className="fa fa-heart"></i>
+                                                                    ) }
+                                                                </button>
+                                                            {/* )} */}
+
+                                                            <button className="icon-btn delete-btn" title="Delete" onClick={deleteIdea(idea._id)}>
                                                                 <i className="fa fa-trash"></i>
                                                             </button>
                                                         </td>
@@ -257,6 +296,35 @@ const AdminDashboard = () => {
                             submitStatement={submitStatement}
                             showSuccess={showSuccess}
                         />
+                    )}
+
+                    {activeSection === "students" && (
+                        <div style={{ padding: "20px" }}>
+                            <h2>Students Section</h2>
+                            <p>This section will display all students who have submitted ideas for the selected problem.</p>
+
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Mobile No.</th>
+                                        <th>class/Year</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {studentsByAdmin.map((student) => (
+                                        <tr key={student._id}>
+                                            <td>{student.fullName}</td>
+                                            <td>{student.email}</td>
+                                            <td>{student.phone}</td>
+                                            <td>{student.classYear}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     )}
 
                     {activeSection === "view" && (

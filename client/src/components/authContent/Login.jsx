@@ -36,7 +36,7 @@ const Login = () => {
 
             // ✅ STORE USER ID IN LOCAL STORAGE
             localStorage.setItem("userId", result.student.id);
-            localStorage.setItem("userMode ", "student");
+            localStorage.setItem("userMode", "student");
 
             setMessageText(result.message || "Login successful! Redirecting to Dashboard...");
             setMessageColor("#16a34a");
@@ -116,12 +116,6 @@ const Login = () => {
                             {showPassword ? "🔒" : "👁️"}
                         </span>
                     </div>
-                </div>
-
-                <div className="extra-options">
-                    <label className="checkbox-container">
-                        <input type="checkbox" /> Remember me
-                    </label>
                 </div>
 
                 <button type="submit">Login</button>

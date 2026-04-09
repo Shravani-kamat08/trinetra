@@ -35,7 +35,7 @@ const AdminAuth = () => {
             console.log(res.data);
 
             localStorage.setItem("userId", res.data.adminId);
-            localStorage.setItem("userMode ", "Admin");
+            localStorage.setItem("userMode", "Admin");
             navigate("/admin-dashboard");
             window.location.reload();
 

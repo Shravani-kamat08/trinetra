@@ -12,6 +12,7 @@ import AdminDashboard from "./components/admin/AdminDashboard";
 import Home from "./components/Home";
 
 import api from "./util/api";
+import StudentDashboard from "./components/authContent/StudentDashboard";
 
 function App() {
   const [student, setStudent] = useState(null);
@@ -74,6 +75,7 @@ function App() {
           <Route path="/problem-statement" element={<ProblemDetail student={student} admin={admin} setProblem={setProblem} />} />
           <Route path="/trinetra-platform" element={<TrinetraPlatform />} />
           <Route path="/idea-submission" element={<IdeaSubmissionForm student={student} problem={problem} />} />
+          <Route path="/student-dashboard" element={<StudentDashboard />} />
         </Route>
 
         <Route path="/login" element={<Login />} />

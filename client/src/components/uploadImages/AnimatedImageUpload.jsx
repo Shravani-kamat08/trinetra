@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../util/api";
+import UploadProfileImage from "./UploadProfileImage"; // ✅ NEW IMPORT
 
 const Register = () => {
     const navigate = useNavigate();
@@ -9,10 +10,11 @@ const Register = () => {
     const [adminData, setAdminData] = useState({
         adminId: "",
         name: "",
-        email : " ",
-        phone : " ",
+        email: " ",
+        phone: " ",
         collegeName: ""
     });
+
     const [formData, setFormData] = useState({
         fullname: "",
         classyear: "",
@@ -23,20 +25,24 @@ const Register = () => {
         password: "",
         confirmPassword: ""
     });
+
     const [preview, setPreview] = useState("https://via.placeholder.com/80");
-    const [selectedFile, setSelectedFile] = useState(null);
+
+    // ✅ NEW STATES FOR MODAL
+    const [showUploadModal, setShowUploadModal] = useState(false);
+    const [uploadedImageUrl, setUploadedImageUrl] = useState("");
 
     /* STEP 1 : FETCH ADMIN */
     const handleCommonIdSubmit = async (e) => {
         e.preventDefault();
         try {
             const res = await api.post("/admin/get-admin", { commonId });
-            console.log(res.data)
+            console.log(res.data);
             setAdminData({
                 adminId: res.data.adminId,
                 name: res.data.name,
-                email : res.data.email,
-                phone : res.data.phone,
+                email: res.data.email,
+                phone: res.data.phone,
                 collegeName: res.data.collegeName
             });
             setStep(2);
@@ -44,6 +50,7 @@ const Register = () => {
             alert("Invalid Common ID");
         }
     };
+
     /* HANDLE INPUT */
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -52,19 +59,6 @@ const Register = () => {
             [name]: value
         }));
     };
-    /* IMAGE UPLOAD */
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setSelectedFile(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreview(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
 
     /* FINAL REGISTER */
     const handleSubmit = async (e) => {
@@ -84,7 +78,7 @@ const Register = () => {
             dateOfBirth: formData.dob,
             password: formData.password,
             confirmPassword: formData.confirmPassword,
-            profilePic: selectedFile ? preview : null
+            profilePic: uploadedImageUrl || null // ✅ UPDATED
         };
 
         try {
@@ -99,13 +93,12 @@ const Register = () => {
         }
     };
 
-
     return (
         <div className="container">
             <h2>Student Registration</h2>
 
             {/* STEP 1 : COMMON ID */}
-            {step=== 1 && (
+            {step === 1 && (
                 <form onSubmit={handleCommonIdSubmit}>
                     <div className="input-group">
                         <label>Enter College Common ID</label>
@@ -122,7 +115,6 @@ const Register = () => {
                     </button>
                 </form>
             )}
-
 
             {/* STEP 2 : REGISTER FORM */}
             {step === 2 && (
@@ -146,7 +138,7 @@ const Register = () => {
                     <div className="profile-upload">
                         <div className="avatar-preview">
                             <img
-                                src={preview}
+                                src={uploadedImageUrl || preview} // ✅ UPDATED
                                 alt="Profile"
                                 style={{
                                     width: "80px",
@@ -155,14 +147,16 @@ const Register = () => {
                                 }}
                             />
                         </div>
-                        <label htmlFor="profilePic">Upload Photo</label>
-                        <input
-                            type="file"
-                            hidden
-                            id="profilePic"
-                            onChange={handleFileChange}
-                        />
+
+                        {/* ✅ OPEN MODAL INSTEAD OF INPUT */}
+                        <label
+                            onClick={() => setShowUploadModal(true)}
+                            style={{ cursor: "pointer" }}
+                        >
+                            Upload Photo
+                        </label>
                     </div>
+
                     {/* STUDENT FORM */}
                     <div className="input-group">
                         <label>Full Name</label>
@@ -259,12 +253,23 @@ const Register = () => {
                     </button>
                 </form>
             )}
+
+            {/* ✅ MODAL RENDER */}
+            {showUploadModal && (
+                <UploadProfileImage
+                    onClose={() => setShowUploadModal(false)}
+                    onUploadSuccess={(url) => {
+                        setUploadedImageUrl(url);
+                        setShowUploadModal(false);
+                    }}
+                />
+            )}
+
             <p className="login-link">
                 Already have an account? <Link to="/login">Login</Link>
             </p>
         </div>
     );
-
 };
 
 export default Register;

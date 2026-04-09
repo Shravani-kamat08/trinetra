@@ -19,11 +19,15 @@ const ViewIdeas = ({ ideas }) => {
                 <tbody>
                     {ideas.map((idea, index) => (
                         <tr key={index}>
-                            <td>{idea.title}</td>
-                            <td>{idea.domain}</td>
-                            <td>{idea.startDate}</td>
-                            <td>{idea.endDate}</td>
-                            <td>{idea.status}</td>
+                            {idea.likeStamp && (
+                                <>
+                                    <td>{idea.title}</td>
+                                    <td>{idea.domain}</td>
+                                    <td>{idea.startDate}</td>
+                                    <td>{idea.endDate}</td>
+                                    <td>{idea.status}</td>
+                                </>
+                            )}
                         </tr>
                     ))}
                 </tbody>
