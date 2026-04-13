@@ -10,6 +10,8 @@ import IdeaSubmissionForm from "./components/innovationIdea/IdeaSubmissionForm";
 import AdminLogin from "./components/admin/AdminLogin";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import Home from "./components/Home";
+import IicTeam from "./components/iic/IicTeam"
+import IicForm from "./components/iic/IicForm"
 
 import api from "./util/api";
 import StudentDashboard from "./components/authContent/StudentDashboard";
@@ -76,6 +78,8 @@ function App() {
           <Route path="/trinetra-platform" element={<TrinetraPlatform />} />
           <Route path="/idea-submission" element={<IdeaSubmissionForm student={student} problem={problem} />} />
           <Route path="/student-dashboard" element={<StudentDashboard />} />
+          {/* <Route path="/iic-team-council" element={<IicTeam />} /> */}
+          <Route path="/iic-team-council/create" element={<IicForm />} />
         </Route>
 
         <Route path="/login" element={<Login />} />

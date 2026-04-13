@@ -30,6 +30,7 @@ app.use("/api/ideas", require("./routes/ideaRoutes"));
 app.use("/api/problems", require("./routes/problemRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 app.use('/api/file', require('./routes/uploadRoutes'));
+app.use("/api/iic", require("./routes/iicRoutes"));
 
 app.get('/', (req, res) => {
     res.send('Final year project (Trinetra innovation portal) website backend running...');

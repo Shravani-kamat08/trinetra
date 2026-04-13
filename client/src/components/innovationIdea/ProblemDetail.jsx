@@ -27,7 +27,7 @@ const ProblemDetail = ({ student, admin, setProblem }) => {
             getProblem(admin?._id)
         }
 
-    }, [student]);
+    }, []);
 
 
     if (!data) {

@@ -25,6 +25,11 @@ const Sidebar = ({ setActiveSection, logout }) => {
                     <span>View Students</span>
                 </li>
 
+                <li onClick={() => setActiveSection("iic-team")}>
+                    <i className="fa fa-folder"></i>
+                    <span>IIC Council Team </span>
+                </li>
+
                 <li onClick={() => setActiveSection("view")}>
                     <i className="fa fa-folder"></i>
                     <span>View Saved</span>

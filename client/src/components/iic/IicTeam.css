@@ -1,0 +1,102 @@
+.iic-container {
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.iic-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.iic-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.iic-table th,
+.iic-table td {
+  border: 1px solid #e0e0e0;
+  padding: 12px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.iic-table th {
+  background-color: #f8f9fb;
+  font-weight: 600;
+  color: #444;
+}
+
+.iic-table tr {
+  transition: background 0.2s ease;
+}
+
+.iic-table tr:hover {
+  background-color: #f9fbff;
+}
+
+/* Name styling */
+.iic-table td strong {
+  color: #222;
+  font-size: 15px;
+}
+
+/* Action buttons */
+.iic-table td button {
+  margin-right: 6px;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+/* View */
+.iic-table td button:nth-child(1) {
+  background: #e3f2fd;
+}
+
+.iic-table td button:nth-child(1):hover {
+  background: #bbdefb;
+}
+
+/* Edit */
+.iic-table td button:nth-child(2) {
+  background: #fff3e0;
+}
+
+.iic-table td button:nth-child(2):hover {
+  background: #ffe0b2;
+}
+
+/* Delete */
+.iic-table td button:nth-child(3) {
+  background: #ffebee;
+}
+
+.iic-table td button:nth-child(3):hover {
+  background: #ffcdd2;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .iic-table th,
+  .iic-table td {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .iic-container h2 {
+    font-size: 18px;
+  }
+}

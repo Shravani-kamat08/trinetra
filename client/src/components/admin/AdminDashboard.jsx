@@ -8,6 +8,7 @@ import UploadStatement from "./UploadStatement";
 import ViewIdeas from "./ViewIdeas";
 import api from "../../util/api"
 import IdeaModal from "./IdeaModal";
+import IicTeam from "../iic/IicTeam";
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -43,7 +44,7 @@ const AdminDashboard = () => {
             const prob = await api.get(`/problems/admin/${adminId}`);
             const stud = await api.get(`/students/admin/${adminId}`)
 
-            const problems = prob.data.data || [];  
+            const problems = prob.data.data || [];
             console.log(stud.data.students)
 
             setProblemData(problems);
@@ -326,6 +327,11 @@ const AdminDashboard = () => {
                             </table>
                         </div>
                     )}
+
+                    {activeSection === "iic-team" && (
+                        <IicTeam />
+                    )}
+
 
                     {activeSection === "view" && (
                         <ViewIdeas ideas={ideas} />
