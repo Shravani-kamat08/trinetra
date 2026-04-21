@@ -4,7 +4,7 @@ function UploadProblemStatementImage({ onClose, onUploadSuccess }) {
     return (
         <AnimatedImageUpload
             title="Problem Statement Image"
-            uploadEndpoint="/api/file/problem-statement"
+            uploadEndpoint="/file/problem-statement"
             onClose={onClose}
             onUploadSuccess={onUploadSuccess}
         />

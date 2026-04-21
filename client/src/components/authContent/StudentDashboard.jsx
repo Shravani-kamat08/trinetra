@@ -42,14 +42,14 @@ const StudentDashboard = () => {
         navigate("/dashboard");
     };
 
-    if (!data) return <p className="loading">Loading...</p>;
+    if (!data) return <div className="loading-screen">Loading...</div>;
 
     return (
         <div className="premium-dashboard">
 
             {/* SIDEBAR */}
-            <div className="premium-sidebar">
-                <h2 className="logo">🎓Student Panel</h2>
+            <aside className="premium-sidebar">
+                <h2 className="logo">🎓 Student Panel</h2>
 
                 <div className="menu">
                     <button
@@ -80,53 +80,59 @@ const StudentDashboard = () => {
                         🔒 Password
                     </button>
                 </div>
-            </div>
+            </aside>
 
             {/* MAIN */}
-            <div className="premium-main">
+            <main className="premium-main">
 
+                {/* TOPBAR */}
                 <div className="topbar">
                     <h1>Student Dashboard</h1>
                 </div>
 
-                <div className="content">
+                {/* CENTERED CONTENT */}
+                <div className="content-wrapper">
 
-                    {activeTab === "ideas" && (
-                        <IdeasTable ideas={data.ideas} />
-                    )}
+                    <div className="content-card">
 
-                    {activeTab === "profile" && (
-                        <div className="grid">
+                        {activeTab === "ideas" && (
+                            <IdeasTable ideas={data.ideas} />
+                        )}
+
+                        {activeTab === "profile" && (
+                            <div className="grid">
+                                <ProfileCard
+                                    form={form}
+                                    setForm={setForm}
+                                    showProfileForm={false}
+                                    updateProfile={updateProfile}
+                                />
+                                <AdminCard admin={data.admin} />
+                            </div>
+                        )}
+
+                        {activeTab === "update" && (
                             <ProfileCard
                                 form={form}
                                 setForm={setForm}
-                                showProfileForm={false}
+                                showProfileForm={true}
                                 updateProfile={updateProfile}
                             />
-                            <AdminCard admin={data.admin} />
-                        </div>
-                    )}
+                        )}
 
-                    {activeTab === "update" && (
-                        <ProfileCard
-                            form={form}
-                            setForm={setForm}
-                            showProfileForm={true}
-                            updateProfile={updateProfile}
-                        />
-                    )}
+                        {activeTab === "password" && (
+                            <ChangePassword
+                                password={password}
+                                setPassword={setPassword}
+                                changePassword={changePassword}
+                            />
+                        )}
 
-                    {activeTab === "password" && (
-                        <ChangePassword
-                            password={password}
-                            setPassword={setPassword}
-                            changePassword={changePassword}
-                        />
-                    )}
+                    </div>
 
                 </div>
 
-            </div>
+            </main>
 
         </div>
     );

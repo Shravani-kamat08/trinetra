@@ -4,11 +4,11 @@ function UploadProfileImage({ onClose, onUploadSuccess }) {
     return (
         <AnimatedImageUpload
             title="Profile Image"
-            uploadEndpoint="/api/file/profile"
+            uploadEndpoint="/file/upload-profile"
             onClose={onClose}
             onUploadSuccess={onUploadSuccess}
         />
     );
 }
 
-export default UploadProfileImage;
+export default UploadProfileImage

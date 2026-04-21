@@ -25,7 +25,8 @@ const Navbar = ({ toggleSidebar, adminData }) => {
                 </div>
             </div>
 
-            <div className="nav-center">
+            <div className="nav-center d-flex flex-row align-items-center">
+                <img className="adminDashboard-img rounded-circle m-2" src={adminData.profilePic} alt="Admin" />
                 <h1 className="admin-title"> {adminData.name}</h1>
             </div>
 

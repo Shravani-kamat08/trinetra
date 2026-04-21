@@ -1,275 +1,135 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { UploadCloud, X, Image as ImageIcon, Loader2 } from "lucide-react";
 import api from "../../util/api";
-import UploadProfileImage from "./UploadProfileImage"; // ✅ NEW IMPORT
+import { toast } from "react-toastify";
 
-const Register = () => {
-    const navigate = useNavigate();
-    const [step, setStep] = useState(1);
-    const [commonId, setCommonId] = useState("");
-    const [adminData, setAdminData] = useState({
-        adminId: "",
-        name: "",
-        email: " ",
-        phone: " ",
-        collegeName: ""
-    });
+function AnimatedImageUpload({ title, uploadEndpoint, onClose, onUploadSuccess }) {
+    const [imageUrl, setImageUrl] = useState("");
+    const [error, setError] = useState("");
+    const [isUploading, setIsUploading] = useState(false);
+    const fileInputRef = useRef(null);
 
-    const [formData, setFormData] = useState({
-        fullname: "",
-        classyear: "",
-        branch: "",
-        email: "",
-        phone: "",
-        dob: "",
-        password: "",
-        confirmPassword: ""
-    });
+    const handleUpload = async (file) => {
+        const uploadData = new FormData();
+        uploadData.append("image", file);
 
-    const [preview, setPreview] = useState("https://via.placeholder.com/80");
-
-    // ✅ NEW STATES FOR MODAL
-    const [showUploadModal, setShowUploadModal] = useState(false);
-    const [uploadedImageUrl, setUploadedImageUrl] = useState("");
-
-    /* STEP 1 : FETCH ADMIN */
-    const handleCommonIdSubmit = async (e) => {
-        e.preventDefault();
         try {
-            const res = await api.post("/admin/get-admin", { commonId });
-            console.log(res.data);
-            setAdminData({
-                adminId: res.data.adminId,
-                name: res.data.name,
-                email: res.data.email,
-                phone: res.data.phone,
-                collegeName: res.data.collegeName
+            setIsUploading(true);
+            setError("");
+
+            const res = await api.post(uploadEndpoint, uploadData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
-            setStep(2);
-        } catch (error) {
-            alert("Invalid Common ID");
+
+            const finalUrl = res.data.imageUrl;
+            console.log("Final URL: ", res.data);
+            setImageUrl(finalUrl);
+
+            if (onUploadSuccess) {
+                onUploadSuccess(finalUrl);
+            }
+
+            toast.success("Image uploaded successfully!");
+        } catch (err) {
+            setError("Upload failed. Please try again.");
+            toast.error("Upload failed.");
+        } finally {
+            setIsUploading(false);
         }
     };
 
-    /* HANDLE INPUT */
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-    /* FINAL REGISTER */
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (formData.password !== formData.confirmPassword) {
-            alert("Passwords do not match!");
-            return;
-        }
-
-        const data = {
-            adminId: adminData.adminId,
-            fullName: formData.fullname,
-            classYear: formData.classyear,
-            branch: formData.branch,
-            email: formData.email,
-            phone: formData.phone,
-            dateOfBirth: formData.dob,
-            password: formData.password,
-            confirmPassword: formData.confirmPassword,
-            profilePic: uploadedImageUrl || null // ✅ UPDATED
-        };
-
-        try {
-            const response = await api.post("/students/register", data);
-            const result = response.data;
-            localStorage.setItem("userId", result.student.id);
-            localStorage.setItem("userMode", "student");
-            alert("Registration Successful");
-            navigate("/dashboard");
-        } catch (error) {
-            alert(error.response?.data?.message || "Registration Failed");
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith("image/")) {
+            handleUpload(file);
+        } else {
+            setError("Please select a valid image.");
         }
     };
 
     return (
-        <div className="container">
-            <h2>Student Registration</h2>
-
-            {/* STEP 1 : COMMON ID */}
-            {step === 1 && (
-                <form onSubmit={handleCommonIdSubmit}>
-                    <div className="input-group">
-                        <label>Enter College Common ID</label>
-                        <input
-                            type="text"
-                            placeholder="example: adscoe-rohit-1234"
-                            value={commonId}
-                            onChange={(e) => setCommonId(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <button type="submit" className="register-btn">
-                        Continue
-                    </button>
-                </form>
-            )}
-
-            {/* STEP 2 : REGISTER FORM */}
-            {step === 2 && (
-                <form onSubmit={handleSubmit}>
-                    {/* ADMIN INFO */}
-                    <div
-                        style={{
-                            background: "#f4f6ff",
-                            padding: "10px",
-                            marginBottom: "20px",
-                            borderRadius: "8px"
-                        }}
-                    >
-                        <h3>Name : {adminData.name}</h3>
-                        <p>College : {adminData.collegeName}</p>
-                        <p>Email ID :{adminData.email}</p>
-                        <p>Contact No. : {adminData.phone}</p>
+        <AnimatePresence>
+            <motion.div
+                className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", zIndex: 1050 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+            >
+                <motion.div
+                    initial={{ scale: 0.8, y: 50, opacity: 0 }}
+                    animate={{ scale: 1, y: 0, opacity: 1 }}
+                    exit={{ scale: 0.8, y: 50, opacity: 0 }}
+                    className="bg-white rounded shadow-lg w-100"
+                    style={{ maxWidth: "500px", overflow: "hidden" }}
+                >
+                    {/* HEADER */}
+                    <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
+                        <h5 className="mb-0">{title}</h5>
+                        <button onClick={onClose} className="btn btn-sm btn-outline-danger">
+                            <X size={18} />
+                        </button>
                     </div>
 
-                    {/* PROFILE IMAGE */}
-                    <div className="profile-upload">
-                        <div className="avatar-preview">
-                            <img
-                                src={uploadedImageUrl || preview} // ✅ UPDATED
-                                alt="Profile"
-                                style={{
-                                    width: "80px",
-                                    height: "80px",
-                                    borderRadius: "50%"
-                                }}
-                            />
-                        </div>
+                    {/* BODY */}
+                    <div className="p-4 text-center">
 
-                        {/* ✅ OPEN MODAL INSTEAD OF INPUT */}
-                        <label
-                            onClick={() => setShowUploadModal(true)}
-                            style={{ cursor: "pointer" }}
+                        <div
+                            className="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle position-relative"
+                            style={{
+                                width: "180px",
+                                height: "180px",
+                                background: "#e9ecef",
+                                overflow: "hidden"
+                            }}
                         >
-                            Upload Photo
-                        </label>
-                    </div>
+                            {imageUrl ? (
+                                <img
+                                    src={imageUrl}
+                                    alt="Preview"
+                                    className="w-100 h-100"
+                                    style={{ objectFit: "cover" }}
+                                />
+                            ) : (
+                                <ImageIcon size={60} className="text-secondary" />
+                            )}
 
-                    {/* STUDENT FORM */}
-                    <div className="input-group">
-                        <label>Full Name</label>
-                        <input
-                            type="text"
-                            name="fullname"
-                            required
-                            value={formData.fullname}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="input-row">
-                        <div className="input-group">
-                            <label>Class / Year</label>
-                            <input
-                                type="text"
-                                name="classyear"
-                                required
-                                value={formData.classyear}
-                                onChange={handleChange}
-                            />
+                            {isUploading && (
+                                <div
+                                    className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                                    style={{ background: "rgba(0,0,0,0.5)" }}
+                                >
+                                    <Loader2 size={35} className="text-white spin" />
+                                </div>
+                            )}
                         </div>
 
-                        <div className="input-group">
-                            <label>Branch</label>
-                            <input
-                                type="text"
-                                name="branch"
-                                required
-                                value={formData.branch}
-                                onChange={handleChange}
-                            />
-                        </div>
+                        {error && <p className="text-danger small">{error}</p>}
                     </div>
 
-                    <div className="input-group">
-                        <label>Email</label>
+                    {/* FOOTER */}
+                    <div className="p-3 border-top text-center">
+                        <button
+                            onClick={() => fileInputRef.current.click()}
+                            className="btn btn-warning"
+                        >
+                            <UploadCloud size={18} className="me-2" />
+                            {imageUrl ? "Change Image" : "Upload Image"}
+                        </button>
+
                         <input
-                            type="email"
-                            name="email"
-                            required
-                            value={formData.email}
-                            onChange={handleChange}
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            ref={fileInputRef}
+                            className="d-none"
                         />
                     </div>
-
-                    <div className="input-group">
-                        <label>Phone</label>
-                        <input
-                            type="tel"
-                            name="phone"
-                            required
-                            value={formData.phone}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="input-group">
-                        <label>Date of Birth</label>
-                        <input
-                            type="date"
-                            name="dob"
-                            required
-                            value={formData.dob}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="input-group">
-                        <label>Password</label>
-                        <input
-                            type="password"
-                            name="password"
-                            required
-                            value={formData.password}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="input-group">
-                        <label>Confirm Password</label>
-                        <input
-                            type="password"
-                            name="confirmPassword"
-                            required
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <button type="submit" className="register-btn">
-                        Register
-                    </button>
-                </form>
-            )}
-
-            {/* ✅ MODAL RENDER */}
-            {showUploadModal && (
-                <UploadProfileImage
-                    onClose={() => setShowUploadModal(false)}
-                    onUploadSuccess={(url) => {
-                        setUploadedImageUrl(url);
-                        setShowUploadModal(false);
-                    }}
-                />
-            )}
-
-            <p className="login-link">
-                Already have an account? <Link to="/login">Login</Link>
-            </p>
-        </div>
+                </motion.div>
+            </motion.div>
+        </AnimatePresence>
     );
-};
+}
 
-export default Register;
+export default AnimatedImageUpload;

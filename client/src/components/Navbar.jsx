@@ -1,16 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const Navbar = ({ student, admin }) => {
 
+const Navbar = ({ student, admin }) => {
     const navigate = useNavigate();
-    const [menuOpen, setMenuOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
 
     const userId = localStorage.getItem("userId");
     const userMode = localStorage.getItem("userMode");
-
-    console.log(userId, userMode)
 
     const user = userMode === "Admin" ? admin : student;
 
@@ -24,159 +21,165 @@ const Navbar = ({ student, admin }) => {
         "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
     return (
-        <header>
+        <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+            <div className="container-fluid">
 
-            <div className="logo">
-                <span>🔺</span>
-                <h1>
-                    TRINETRA <span className="sub-title">Innovation Portal</span>
-                </h1>
-            </div>
+                {/* BRAND */}
+                <Link className="navbar-brand d-flex align-items-center" to="/">
+                    <span>🔺</span>
+                    <h2 className=" mb-0">
+                        TRINETRA <span className="sub-title">Innovation Portal</span>
+                    </h2>
+                </Link>
 
-            <div
-                className="menu-toggle"
-                onClick={() => setMenuOpen(!menuOpen)}
-            >
-                ☰
-            </div>
+                {/* TOGGLER */}
+                <button
+                    className="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                >
+                    <span className="navbar-toggler-icon"></span>
+                </button>
 
-            <nav className={menuOpen ? "active" : ""}>
-                <ul>
+                {/* NAV ITEMS */}
+                <div className="collapse navbar-collapse" id="navbarSupportedContent">
 
-                    {userMode == "Admin" && <li>
-                        <Link to="/admin-dashboard">Admin dashboard</Link>
-                    </li>}
+                    <ul className="w-100 navbar-nav me-auto mb-2 mb-lg-0 justify-content-end">
 
-                    <li>
-                        <Link to="/dashboard">Home</Link>
-                    </li>
+                        <li className="nav-item">
+                            <Link className="nav-link active" to="/dashboard">
+                                Home
+                            </Link>
+                        </li>
 
-                    {userMode == "student" && <li>
-                        <Link to="/student-dashboard">Dashboard</Link>
-                    </li>}
-
-                    <li>
-                        <a href="#trinetra">About Trinetra</a>
-                    </li>
-
-                    <li className="dropdown">
-                        <a href="#iic">About IIC ▾</a>
-
-                        <ul className="dropdown-content">
-                            <li>
-                                <a href="#student">Student Council</a>
-                            </li>
-                            <li>
-                                <a href="#faculty">Faculty Council</a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li>
-                        <a href="#contact">Contact</a>
-                    </li>
-
-                    {!userId && (
-                        <>
-                            <li>
-                                <Link to="/login" className="btn-login">
-                                    Login
+                        {userMode === "Admin" && (
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/admin-dashboard">
+                                    Admin Dashboard
                                 </Link>
                             </li>
+                        )}
 
-                            <li>
-                                <Link to="/register" className="btn-register">
-                                    Register
+                        {userMode === "student" && (
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/student-dashboard">
+                                    Student Dashboard
                                 </Link>
                             </li>
+                        )}
 
-                            <li>
-                                <Link to="/admin-login" className="btn-admin">
-                                    Admin
-                                </Link>
-                            </li>
-                        </>
-                    )}
+                        {/* DROPDOWN */}
+                        <li className="nav-item dropdown">
+                            <a
+                                className="nav-link dropdown-toggle"
+                                href="#"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                            >
+                                About IIC
+                            </a>
 
-                    {userId && user && (
-                        <li
-                            className="profile-menu"
-                            onMouseEnter={() => setProfileOpen(true)}
-                            onMouseLeave={() => setProfileOpen(false)}
-                        >
+                            <ul className="dropdown-menu">
+                                <li>
+                                    <a className="dropdown-item" href="#student">
+                                        Student Council
+                                    </a>
+                                </li>
+                                <li>
+                                    <a className="dropdown-item" href="#faculty">
+                                        Faculty Council
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-                            {/* Profile Image */}
-                            <img
-                                src={user.profilePic || defaultAvatar}
-                                alt="profile"
-                                className="profile-img"
-                            />
+                        <li className="nav-item">
+                            <a className="nav-link" href="#contact">
+                                Contact
+                            </a>
+                        </li>
+                    {/* </ul> */}
 
-                            {profileOpen && (
-                                <div className="profile-dropdown">
+                    {/* RIGHT SIDE */}
+                    {/* <div className="d-flex align-items-center ml-10"> */}
 
-                                    <div className="profile-header">
+                        {!userId ? (
+                            <>
+                                <li className="nav-item">
+                                    <Link to="/login" className="btn-login p-2 px-3">
+                                        Login
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/register" className="btn-register p-2">
+                                        Register
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/admin-login" className="btn-admin">
+                                        Admin
+                                    </Link>
+                                </li>
+                            </>
+                        ) : (
+                            <div
+                                className="position-relative ms-3"
+                                onMouseEnter={() => setProfileOpen(true)}
+                                onMouseLeave={() => setProfileOpen(false)}
+                            >
+                                <img
+                                    src={user?.profilePic || defaultAvatar}
+                                    alt="profile"
+                                    className="rounded-circle"
+                                    width="40"
+                                    height="40"
+                                    style={{ cursor: "pointer" }}
+                                />
 
-                                        <img
-                                            src={user.profilePic || defaultAvatar}
-                                            alt="profile"
-                                        />
+                                {profileOpen && (
+                                    <div className="position-absolute end-0 mt-2 bg-white shadow p-3" style={{ minWidth: "250px" }}>
 
-                                        <h4>
-                                            {userMode === "Admin"
-                                                ? user.name
-                                                : user.fullName}
-                                        </h4>
+                                        <div className="text-center mb-2">
+                                            <img
+                                                src={user?.profilePic || defaultAvatar}
+                                                alt="profile"
+                                                className="rounded-circle"
+                                                width="60"
+                                            />
+                                            <h6 className="mt-2">
+                                                {userMode === "Admin"
+                                                    ? user?.name
+                                                    : user?.fullName}
+                                            </h6>
+                                        </div>
 
-                                    </div>
-
-                                    <div className="profile-info">
-
-                                        <p>
-                                            <strong>Email:</strong> {user.email}
-                                        </p>
+                                        <p><strong>Email:</strong> {user?.email}</p>
 
                                         {userMode === "student" && (
                                             <>
-                                                <p>
-                                                    <strong>Branch:</strong> {user.branch}
-                                                </p>
-
-                                                <p>
-                                                    <strong>Year:</strong> {user.classYear}
-                                                </p>
+                                                <p><strong>Branch:</strong> {user?.branch}</p>
+                                                <p><strong>Year:</strong> {user?.classYear}</p>
                                             </>
                                         )}
 
-                                        {user.phone && (
-                                            <p>
-                                                <strong>Phone:</strong> {user.phone}
-                                            </p>
-                                        )}
+                                        <p><strong>Role:</strong> {userMode}</p>
 
-                                        <p>
-                                            <strong>Role:</strong> {userMode}
-                                        </p>
-
+                                        <button
+                                            className="btn btn-danger w-100 mt-2"
+                                            onClick={handleLogout}
+                                        >
+                                            Logout
+                                        </button>
                                     </div>
-
-                                    <button
-                                        className="btn-logout"
-                                        onClick={handleLogout}
-                                    >
-                                        Logout
-                                    </button>
-
-                                </div>
-                            )}
-
-                        </li>
-                    )}
-
-                </ul>
-            </nav>
-
-        </header>
+                                )}
+                            </div>
+                        )}
+                    {/* </div> */}
+                        </ul>
+                </div>
+            </div>
+        </nav>
     );
 };
 

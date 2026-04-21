@@ -6,19 +6,16 @@ import api from '../../util/api';
 const Login = () => {
     const navigate = useNavigate();
 
-    // --- STATE FOR LOGIC ---
     const [showPassword, setShowPassword] = useState(false);
     const [messageText, setMessageText] = useState("");
     const [messageColor, setMessageColor] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    // --- 1. PASSWORD VISIBILITY TOGGLE ---
     const handleTogglePass = () => {
         setShowPassword(!showPassword);
     };
 
-    // --- 2. FORM SUBMISSION ---
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
 
@@ -26,7 +23,6 @@ const Login = () => {
         setMessageColor("#2563eb");
 
         try {
-
             const response = await api.post("/students/login", {
                 email: email,
                 password: password
@@ -34,100 +30,104 @@ const Login = () => {
 
             const result = response.data;
 
-            // ✅ STORE USER ID IN LOCAL STORAGE
             localStorage.setItem("userId", result.student.id);
             localStorage.setItem("userMode", "student");
 
-            setMessageText(result.message || "Login successful! Redirecting to Dashboard...");
+            setMessageText(result.message || "Login successful!");
             setMessageColor("#16a34a");
 
             setEmail("");
             setPassword("");
 
             navigate('/dashboard');
-            // setTimeout(() => navigate('/dashboard'), 1500);
 
         } catch (error) {
-
-            console.error(error);
-
             setMessageText(error.response?.data?.message || "Login failed");
             setMessageColor("#dc2626");
         }
-
-    };
-
-    // --- 3. SOCIAL LOGIN HANDLER ---
-    const handleSocialClick = (provider) => {
-        setMessageText(`Connecting to ${provider}...`);
-        setMessageColor("#1e40af");
     };
 
     return (
-        <div className="login-box container">
-            <div className="step-indicator">
-                <Link to="/login" className="step active">1</Link>
-                <div className="line"></div>
-                <Link to="/register" className="step">2</Link>
-            </div>
+        <div className="container d-flex justify-content-center align-items-center vh-100">
 
-            <h2>Login to Trinetra</h2>
+            <div className="login-box w-100" style={{ maxWidth: "420px" }}>
 
-            <form id="loginForm" onSubmit={handleLoginSubmit}>
-                <div className="input-group">
-                    <label htmlFor="loginEmail">Email</label>
-                    <input
-                        type="email"
-                        id="loginEmail"
-                        placeholder="Enter your email"
-                        required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
+                {/* Step Indicator */}
+                <div className="step-indicator d-flex justify-content-center align-items-center mb-3">
+                    <Link to="/login" className="step active">1</Link>
+                    <div className="line mx-2"></div>
+                    <Link to="/register" className="step">2</Link>
                 </div>
 
-                <div className="input-group">
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <label htmlFor="loginPassword">Password</label>
-                        <a
-                            href="#"
-                            style={{ fontSize: '12px', color: '#2563eb', textDecoration: 'none' }}
-                        >
-                            Forgot?
-                        </a>
-                    </div>
+                <h2 className="text-center mb-4">Login to Trinetra</h2>
 
-                    <div className="password-wrapper">
+                <form onSubmit={handleLoginSubmit}>
+
+                    {/* EMAIL */}
+                    <div className="input-group mb-3 d-block">
+                        <label htmlFor="loginEmail" className="form-label">Email</label>
+                        <div className="position-relative">
                         <input
-                            type={showPassword ? "text" : "password"}
-                            id="loginPassword"
-                            minLength="8"
+                            type="email"
+                            id="loginEmail"
+                            className="form-control pe-5"
+                            placeholder="Enter your email"
                             required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
-
-                        <span
-                            className="toggle-icon"
-                            id="togglePass"
-                            onClick={handleTogglePass}
-                            style={{ cursor: 'pointer' }}
-                        >
-                            {showPassword ? "🔒" : "👁️"}
-                        </span>
+                        </div>
                     </div>
-                </div>
 
-                <button type="submit">Login</button>
+                    {/* PASSWORD */}
+                    <div className="input-group mb-3 d-block">
+                        {/* <div className="d-flex justify-content-between"> */}
+                            <label htmlFor="loginPassword" className="form-label">Password</label>
+                            {/* <a href="#" className="small text-primary text-decoration-none"> */}
+                                {/* Forgot? */}
+                            {/* </a> */}
+                        {/* </div> */}
 
-                <p id="loginMessage" style={{ color: messageColor }}>
-                    {messageText}
-                </p>
+                        <div className="position-relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="loginPassword"
+                                className="form-control pe-5"
+                                minLength="8"
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
 
-                <p className="signup-link">
-                    New here? <Link to="/register">Create an account</Link>
-                </p>
-            </form>
+                            <span
+                                className="position-absolute top-50 end-0 translate-middle-y me-3"
+                                onClick={handleTogglePass}
+                                style={{ cursor: "pointer" }}
+                            >
+                                {showPassword ? "🔒" : "👁️"}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    {/* BUTTON */}
+                    <button type="submit" className="btn btn-primary w-100">
+                        Login
+                    </button>
+
+                    {/* MESSAGE */}
+                    <p className="text-center mt-3" style={{ color: messageColor }}>
+                        {messageText}
+                    </p>
+
+                    {/* REGISTER LINK */}
+                    <p className="text-center mt-2">
+                        New here? <Link to="/register">Create an account</Link>
+                    </p>
+
+                </form>
+            </div>
         </div>
     );
 };

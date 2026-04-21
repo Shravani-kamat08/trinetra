@@ -3,11 +3,8 @@
     transition: transform 0.2s;
 }
 
-
-
-/* Sidebar */
-
-.sidebar {
+/* SIDEBAR BASE */
+.a-sidebar {
     width: 240px;
     height: 100vh;
     background: #1f2d3d;
@@ -15,51 +12,39 @@
     position: fixed;
     top: 0;
     left: 0;
-    display: flex;
-    flex-direction: column;
-    transition: all 0.3s ease;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
-    /* z-index:1000; */
+    transition: 0.3s;
 }
 
-.sidebar.collapsed {
-    width: 70px;
-}
-
-.sidebar h2 {
-    text-align: center;
+/* HEADER */
+.a-sidebar h2 {
     padding: 20px 0;
     background: #16222e;
+    margin: 0;
     font-size: 20px;
-    letter-spacing: 0.5px;
 }
 
-.sidebar ul {
-    list-style: none;
-    padding: 10px 0;
-}
-
-.sidebar ul li {
+/* MENU ITEMS */
+.a-sidebar ul li {
     padding: 14px 20px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    transition: all 0.25s ease;
+    color: #fff;
+    transition: 0.2s;
 }
 
-.sidebar ul li:hover {
+/* HOVER */
+.a-sidebar ul li:hover {
     background: #2f4054;
 }
 
-.sidebar ul li i {
-    margin-right: 12px;
+/* ICON */
+.a-sidebar ul li i {
     font-size: 16px;
 }
 
-.sidebar.collapsed ul li span {
-    display: none;
+/* FORCE WHITE TEXT (Bootstrap override fix) */
+.a-sidebar * {
+    color: #fff !important;
 }
-
 
 /* Main Layout */
 
@@ -598,4 +583,10 @@ tr:hover {
 .problemSelector:disabled {
     background-color: #f5f5f5;
     cursor: not-allowed;
+}
+
+.adminDashboard-img{
+    width: 50px;
+    height: 50px;
+    margin : 0 auto;
 }

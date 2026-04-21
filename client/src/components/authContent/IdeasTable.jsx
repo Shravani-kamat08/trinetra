@@ -1,55 +1,67 @@
 import React from "react";
 
 const IdeasTable = ({ ideas }) => {
+
+    // calculate average manual marks safely
+    const getManualAvg = (marks = []) => {
+        if (!marks || marks.length === 0) return 0;
+        const total = marks.reduce((sum, m) => sum + m, 0);
+        return (total / marks.length).toFixed(1);
+    };
+
     return (
-        <div id="ideas-section" className="bg-white p-5 rounded-xl shadow mt-6">
-            <h2 className="text-xl font-semibold mb-3">Dropped Ideas</h2>
+        <div className="ideas-wrapper">
 
-            <div className="overflow-x-auto">
-                <table className="w-full border">
-                    <thead className="bg-gray-200">
-                        <tr>
-                            <th className="p-2">Problem</th>
-                            <th className="p-2">Idea</th>
-                            <th className="p-2">System Marks</th>
-                            <th className="p-2">Manual Marks (Avg)</th>
-                            <th className="p-2">Total</th>
-                        </tr>
-                    </thead>
+            <div className="ideas-card">
 
-                    <tbody>
-                        {ideas.map((idea) => {
-                            var totalManual = 0;
+                <h2 className="ideas-title">Dropped Ideas</h2>
 
-                            for(var i=0; i<idea.manualMarks.length; i++){
-                                totalManual += idea.manualMarks[i];
-                            }
+                <div className="table-responsive">
 
-                            return (
-                                <tr key={idea._id} className="text-center border-t">
-                                    <td className="p-2">
-                                        {idea.problemId?.title || "-"}
-                                    </td>
+                    <table className="ideas-table">
 
-                                    <td className="p-2">{idea.title}</td>
+                        <thead>
+                            <tr>
+                                <th>Problem</th>
+                                <th>Idea</th>
+                                <th>System Marks</th>
+                                <th>Manual Marks (Avg)</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
 
-                                    <td className="p-2">
-                                        {idea.autoPoints || 0}
-                                    </td>
+                        <tbody>
+                            {ideas && ideas.length > 0 ? (
+                                ideas.map((idea, index) => {
 
-                                    <td className="p-2">
-                                        {totalManual}
-                                    </td>
+                                    const manualAvg = getManualAvg(idea.manualMarks);
+                                    const total = (idea.systemMarks || 0) + parseFloat(manualAvg);
 
-                                    <td className="p-2 font-bold">
-                                        {idea.totalScore || 0}
+                                    return (
+                                        <tr key={index}>
+                                            <td>{idea.problemTitle || "-"}</td>
+                                            <td>{idea.title || "-"}</td>
+                                            <td>{idea.systemMarks || 0}</td>
+                                            <td>{manualAvg}</td>
+                                            <td className="total">{total}</td>
+                                        </tr>
+                                    );
+                                })
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="empty">
+                                        No ideas found
                                     </td>
                                 </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                            )}
+                        </tbody>
+
+                    </table>
+
+                </div>
+
             </div>
+
         </div>
     );
 };

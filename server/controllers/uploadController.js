@@ -1,14 +1,15 @@
 const { createClient } = require('@supabase/supabase-js');
 
+
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
+
 
 if (!supabaseUrl || !supabaseKey) {
     console.error("Supabase URL or Key is not defined. Please check your environment variables.");
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
-
 
 const uploadImageToBucket = async (req, res, bucketName, successMessage) => {
     try {
@@ -61,7 +62,6 @@ const uploadImageToBucket = async (req, res, bucketName, successMessage) => {
         });
     }
 };
-
 
 // 1️⃣ Profile Image
 const uploadProfileImage = (req, res) => {

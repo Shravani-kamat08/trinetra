@@ -1,49 +1,41 @@
 import React from "react";
 
 const Sidebar = ({ setActiveSection, logout }) => {
-
     return (
-
-        <div className="sidebar" id="sidebar">
-
-            <h2>Admin Panel</h2>
-
-            <ul>
-
-                <li onClick={() => setActiveSection("dashboard")}>
-                    <i className="fa fa-chart-line"></i>
+        <div className="a-sidebar d-flex flex-column">
+            <h2 className="text-center">Admin Panel</h2>
+            <ul className="list-unstyled flex-grow-1">
+                <li className="d-flex align-items-center" onClick={() => setActiveSection("dashboard")}>
+                    <i className="fa fa-chart-line me-2"></i>
                     <span>Dashboard</span>
                 </li>
 
-                <li onClick={() => setActiveSection("upload")}>
-                    <i className="fa fa-upload"></i>
+                <li className="d-flex align-items-center" onClick={() => setActiveSection("upload")}>
+                    <i className="fa fa-upload me-2"></i>
                     <span>Upload Statement</span>
                 </li>
 
-                <li onClick={() => setActiveSection("students")}>
-                    <i className="fa fa-users"></i>
+                <li className="d-flex align-items-center" onClick={() => setActiveSection("students")}>
+                    <i className="fa fa-users me-2"></i>
                     <span>View Students</span>
                 </li>
 
-                <li onClick={() => setActiveSection("iic-team")}>
-                    <i className="fa fa-folder"></i>
-                    <span>IIC Council Team </span>
+                <li className="d-flex align-items-center" onClick={() => setActiveSection("iic-team")}>
+                    <i className="fa fa-users me-2"></i>
+                    <span>IIC Council Team</span>
                 </li>
 
-                <li onClick={() => setActiveSection("view")}>
-                    <i className="fa fa-folder"></i>
+                <li className="d-flex align-items-center" onClick={() => setActiveSection("view")}>
+                    <i className="fa fa-folder me-2"></i>
                     <span>View Saved</span>
                 </li>
 
-                <li onClick={logout}>
-                    <i className="fa fa-sign-out-alt"></i>
+                <li className="d-flex align-items-center mt-auto" onClick={logout}>
+                    <i className="fa fa-sign-out-alt me-2"></i>
                     <span>Logout</span>
                 </li>
-
             </ul>
-
         </div>
-
     );
 };
 

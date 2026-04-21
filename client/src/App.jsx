@@ -12,6 +12,7 @@ import AdminDashboard from "./components/admin/AdminDashboard";
 import Home from "./components/Home";
 import IicTeam from "./components/iic/IicTeam"
 import IicForm from "./components/iic/IicForm"
+import PageNotFound from "./components/PageNotFound";
 
 import api from "./util/api";
 import StudentDashboard from "./components/authContent/StudentDashboard";
@@ -91,9 +92,7 @@ function App() {
         <Route
           path="*"
           element={
-            <div className="section">
-              <h2>404 - Page Not Found</h2>
-            </div>
+            <PageNotFound />
           }
         />
 

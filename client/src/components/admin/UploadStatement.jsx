@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import api from "../../util/api";
+import UploadProblemStatementImage from "../uploadImages/UploadProblemStatementImage"; // Ensure this path is correct
 
 const UploadStatement = () => {
-
     const [title, setTitle] = useState("");
     const [subject, setSubject] = useState("");
     const [domain, setDomain] = useState("");
@@ -14,10 +14,16 @@ const UploadStatement = () => {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [showSuccess, setShowSuccess] = useState(false);
+    
+    // New states for Upload Modal
+    const [showUploadModal, setShowUploadModal] = useState(false);
 
+    const handleImageUploadSuccess = (url) => {
+        setImage(url);
+        setShowUploadModal(false);
+    };
 
     const submitStatement = async () => {
-
         if (!title || !subject || !domain) {
             alert("Please fill required fields");
             return;
@@ -30,96 +36,59 @@ const UploadStatement = () => {
             complexity,
             estimatedTime,
             reward,
-            image,
+            image, // This now holds the URL from the upload
             description,
             startDate,
             endDate,
-            adminId : localStorage.getItem('userId')
+            adminId: localStorage.getItem('userId')
         };
 
         try {
-
             const response = await api.post("/problems/create", problemData);
-
-
-            const data = await response.data;
+            const data = response.data;
 
             if (data.success) {
-
                 setShowSuccess(true);
-
-                setTimeout(() => {
-                    setShowSuccess(false);
-                }, 3000);
-
-                setTitle("");
-                setSubject("");
-                setDomain("");
-                setComplexity("");
-                setEstimatedTime("");
-                setReward("");
-                setImage("");
-                setDescription("");
-                setStartDate("");
-                setEndDate("");
-
+                setTimeout(() => setShowSuccess(false), 3000);
+                // Reset fields
+                setTitle(""); setSubject(""); setDomain(""); setComplexity("");
+                setEstimatedTime(""); setReward(""); setImage("");
+                setDescription(""); setStartDate(""); setEndDate("");
             } else {
                 alert("Error saving problem statement");
             }
-
         } catch (error) {
-
             console.error(error);
             alert("Server Error");
-
         }
-
     };
 
-
     return (
-
         <div className="form-container">
-
             <h3 style={{ textAlign: "center", marginBottom: "20px" }}>
                 Submit Problem Statement
             </h3>
 
-            <div
-                className="success-box"
-                style={{ display: showSuccess ? "block" : "none" }}
-            >
+            <div className="success-box" style={{ display: showSuccess ? "block" : "none" }}>
                 Statement uploaded successfully
             </div>
 
             {/* Title */}
             <div className="form-group">
                 <label>Idea Title</label>
-                <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                />
+                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
             </div>
 
             {/* Subject */}
             <div className="form-group">
                 <label>Subject</label>
-                <input
-                    type="text"
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                />
+                <input type="text" value={subject} onChange={(e) => setSubject(e.target.value)} />
             </div>
 
             {/* Category */}
             <div className="form-group">
                 <label>Category</label>
-
-                <select
-                    value={domain}
-                    onChange={(e) => setDomain(e.target.value)}
-                >
+                <select value={domain} onChange={(e) => setDomain(e.target.value)}>
                     <option value="">Select Category</option>
                     <option>Software/AI</option>
                     <option>Hardware</option>
@@ -133,11 +102,7 @@ const UploadStatement = () => {
             {/* Complexity */}
             <div className="form-group">
                 <label>Complexity Level</label>
-
-                <select
-                    value={complexity}
-                    onChange={(e) => setComplexity(e.target.value)}
-                >
+                <select value={complexity} onChange={(e) => setComplexity(e.target.value)}>
                     <option value="">Select Complexity</option>
                     <option>Low</option>
                     <option>Medium</option>
@@ -145,73 +110,57 @@ const UploadStatement = () => {
                 </select>
             </div>
 
-            {/* Estimated Time */}
+            {/* Estimated Time & Reward */}
             <div className="form-group">
                 <label>Estimated Completion Time</label>
-                <input
-                    type="text"
-                    value={estimatedTime}
-                    onChange={(e) => setEstimatedTime(e.target.value)}
-                />
+                <input type="text" value={estimatedTime} onChange={(e) => setEstimatedTime(e.target.value)} />
             </div>
 
-            {/* Reward */}
             <div className="form-group">
                 <label>Reward / Incentives</label>
-                <input
-                    type="text"
-                    value={reward}
-                    onChange={(e) => setReward(e.target.value)}
-                />
+                <input type="text" value={reward} onChange={(e) => setReward(e.target.value)} />
             </div>
 
-            {/* Image */}
+            {/* NEW: Image Upload Section */}
             <div className="form-group">
-                <label>Problem Image URL</label>
-                <input
-                    type="text"
-                    value={image}
-                    onChange={(e) => setImage(e.target.value)}
-                />
+                <label>Problem Image</label>
+                <div className="d-flex align-items-center gap-3">
+                    {image && (
+                        <img src={image} alt="Preview" style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }} />
+                    )}
+                    <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => setShowUploadModal(true)}>
+                        {image ? "Change Image" : "Upload Image"}
+                    </button>
+                </div>
             </div>
 
             {/* Description */}
             <div className="form-group">
                 <label>Description</label>
-
-                <textarea
-                    rows="6"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                ></textarea>
+                <textarea rows="6" value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
             </div>
 
-            {/* Start Date */}
+            {/* Dates */}
             <div className="form-group">
                 <label>Start Date</label>
-                <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                />
+                <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             </div>
 
-            {/* End Date */}
             <div className="form-group">
                 <label>End Date</label>
-                <input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                />
+                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
             </div>
 
-            <button className="btn" onClick={submitStatement}>
-                Submit
-            </button>
+            <button className="btn" onClick={submitStatement}>Submit</button>
 
+            {/* Image Upload Modal */}
+            {showUploadModal && (
+                <UploadProblemStatementImage
+                    onClose={() => setShowUploadModal(false)}
+                    onUploadSuccess={handleImageUploadSuccess}
+                />
+            )}
         </div>
-
     );
 };
 

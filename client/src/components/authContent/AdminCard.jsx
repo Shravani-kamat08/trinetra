@@ -4,14 +4,15 @@ const AdminCard = ({ admin }) => {
     return (
         <div className="bg-white p-5 rounded-xl shadow">
             <h2 className="text-xl font-semibold mb-3">Admin Info</h2>
-            <p className="info-item">
-                <strong className="label">Name:</strong>
-                <span className="value">{admin?.name}</span>
-            </p>
-            <p className="info-item">
-                <strong className="label">Email:</strong>
-                <span className="value">{admin?.email}</span>
-            </p>
+            <div className="info-group">
+                <label> Name : </label>
+                <p>{admin?.name || "—"}</p>
+            </div>
+
+            <div className="info-group">
+                <label> Email : </label>
+                <p>{admin?.email || "—"}</p>
+            </div>
         </div>
     );
 };

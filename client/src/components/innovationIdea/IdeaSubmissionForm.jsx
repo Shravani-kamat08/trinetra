@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './IdeaSubmissionForm.css'
+import './IdeaSubmissionForm.css';
 import api from '../../util/api';
+import UploadIdeasDocImage from "../uploadImages/UploadIdeasDocImage";
 
 const IdeaSubmissionForm = ({ student, problem }) => {
     const navigate = useNavigate();
 
-    const userMode = localStorage.getItem("userMode ")
-    console.log(userMode, student)
-    console.log("problem : ", problem)
+    const userMode = localStorage.getItem("userMode ");
+    console.log(userMode, student);
+    console.log("problem : ", problem);
 
     const [currentStep, setCurrentStep] = useState(1);
     const [showModal, setShowModal] = useState(false);
+    const [showUploadModal, setShowUploadModal] = useState(false);
 
-    // Student fields state
     const [students, setStudents] = useState([
         { id: Date.now(), name: '', email: '', dept: '', year: '' }
     ]);
 
-    // Project details state
     const [projectData, setProjectData] = useState({
         title: '',
         category: '',
@@ -27,10 +27,10 @@ const IdeaSubmissionForm = ({ student, problem }) => {
         description: '',
         innovationType: '',
         cost: '',
-        references: ''
+        references: '',
+        file: ''
     });
 
-    // 🔹 AUTO FILL FIRST STUDENT
     useEffect(() => {
         if (student) {
             setStudents([
@@ -62,7 +62,6 @@ const IdeaSubmissionForm = ({ student, problem }) => {
         setCurrentStep((prev) => prev + n);
     };
 
-    // ADD STUDENT
     const addStudent = () => {
         if (students.length >= 3) {
             alert("Maximum 3 students allowed.");
@@ -71,12 +70,10 @@ const IdeaSubmissionForm = ({ student, problem }) => {
         setStudents([...students, { id: Date.now(), name: '', email: '', dept: '', year: '' }]);
     };
 
-    // REMOVE STUDENT
     const removeStudent = (id) => {
         setStudents(students.filter(student => student.id !== id));
     };
 
-    // UPDATE STUDENT
     const updateStudent = (id, field, value) => {
         const updated = students.map(s => {
             if (s.id === id) {
@@ -90,48 +87,34 @@ const IdeaSubmissionForm = ({ student, problem }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const fileInput = document.getElementById("fileUpload");
-        const file = fileInput?.files[0];
-
-        if (file && file.size > 5 * 1024 * 1024) {
-            alert("File size should not exceed 5MB.");
-            return;
-        }
-
         try {
             const payload = {
-                problemId : problem._id,
+                problemId: problem._id,
                 studentId: student?._id,
                 students: students.map(({ id, ...rest }) => rest),
                 ...projectData
             };
-            if (file) {
-                const reader = new FileReader();
-                reader.onloadend = async () => {
-                    payload.file = reader.result;
-                    await api.post("/ideas/submit", payload);
-                    setShowModal(true);
-                };
-                reader.readAsDataURL(file);
-            } else {
-                await api.post("/ideas/submit", payload);
-                setShowModal(true);
-            }
+            await api.post("/ideas/submit", payload);
+            setShowModal(true);
         } catch (error) {
             console.error(error);
             alert(error.response?.data?.message || "Submission failed");
         }
     };
 
+    const handleUploadSuccess = (url) => {
+        setProjectData({ ...projectData, file: url });
+        setShowUploadModal(false);
+    };
+
     const closeModal = () => {
         setShowModal(false);
-        navigate("/dashboard")
+        navigate("/dashboard");
     };
 
     const progressPercent = ((currentStep - 1) / 2) * 100;
 
     if (userMode === "Admin") {
-
         return (
             <div style={{ textAlign: "center", padding: "100px" }}>
                 <h2>Admins cannot submit ideas</h2>
@@ -140,14 +123,11 @@ const IdeaSubmissionForm = ({ student, problem }) => {
                 </button>
             </div>
         );
-
     }
 
-
     return (
-
         <div className="idea-submission-page">
-            <div className="main">
+            <div className="main-ideaSubmission">
                 <div className="container">
                     <h2>Idea Submission Form</h2>
                     <div className="progress-container">
@@ -162,7 +142,6 @@ const IdeaSubmissionForm = ({ student, problem }) => {
                         </div>
                     </div>
                     <form id="ideaForm" onSubmit={handleSubmit}>
-                        {/* STEP 1 */}
                         <div className={`form-step ${currentStep === 1 ? 'active' : ''}`} id="step1">
                             <div className="section-title">Step 1: Student Details (Min 1 - Max 3)</div>
                             <div id="studentsContainer">
@@ -224,7 +203,6 @@ const IdeaSubmissionForm = ({ student, problem }) => {
                                         </select>
                                     </div>
                                 ))}
-
                             </div>
                             <button
                                 type="button"
@@ -244,7 +222,6 @@ const IdeaSubmissionForm = ({ student, problem }) => {
                             </div>
                         </div>
 
-                        {/* STEP 2 */}
                         <div className={`form-step ${currentStep === 2 ? 'active' : ''}`} id="step2">
                             <div className="section-title">Step 2: Project Details</div>
                             <label>Idea Title (Max 100 words) *</label>
@@ -261,7 +238,6 @@ const IdeaSubmissionForm = ({ student, problem }) => {
                                     }
                                 }}
                             />
-
                             <div className="note">
                                 {getWordCount(projectData.title)} / 100 words
                             </div>
@@ -301,21 +277,8 @@ const IdeaSubmissionForm = ({ student, problem }) => {
                                 <option>Software</option>
                                 <option>Hybrid</option>
                             </select>
-{/* 
-                            <label>Problem Statement *</label>
-                            <textarea
-                                required
-                                value={projectData.problemStatement}
-                                onChange={(e) =>
-                                    setProjectData({
-                                        ...projectData,
-                                        problemStatement: e.target.value
-                                    })
-                                }
-                            /> */}
 
                             <div className="step-navigation">
-
                                 <button
                                     type="button"
                                     className="prev-btn"
@@ -323,7 +286,6 @@ const IdeaSubmissionForm = ({ student, problem }) => {
                                 >
                                     Previous
                                 </button>
-
                                 <button
                                     type="button"
                                     className="next-btn"
@@ -331,44 +293,30 @@ const IdeaSubmissionForm = ({ student, problem }) => {
                                 >
                                     Next Step
                                 </button>
-
                             </div>
-
                         </div>
 
-                        {/* STEP 3 */}
-
                         <div className={`form-step ${currentStep === 3 ? 'active' : ''}`} id="step3">
-
                             <div className="section-title">Step 3: Innovation & Submission</div>
-
                             <label>Idea Description *</label>
-
                             <textarea
                                 required
                                 value={projectData.description}
                                 onChange={(e) => {
-
                                     const words = e.target.value.trim().split(/\s+/);
-
                                     if (words.length <= 700) {
-
                                         setProjectData({
                                             ...projectData,
                                             description: e.target.value
                                         });
-
                                     }
-
                                 }}
                             />
-
                             <div className="note">
                                 {getWordCount(projectData.description)} / 700 words
                             </div>
 
                             <label>Innovation Type *</label>
-
                             <select
                                 required
                                 value={projectData.innovationType}
@@ -387,7 +335,6 @@ const IdeaSubmissionForm = ({ student, problem }) => {
                             </select>
 
                             <label>Estimated Cost</label>
-
                             <input
                                 type="number"
                                 value={projectData.cost}
@@ -400,7 +347,6 @@ const IdeaSubmissionForm = ({ student, problem }) => {
                             />
 
                             <label>References</label>
-
                             <textarea
                                 value={projectData.references}
                                 onChange={(e) =>
@@ -411,12 +357,16 @@ const IdeaSubmissionForm = ({ student, problem }) => {
                                 }
                             />
 
-                            <label>Upload Sketch (Max 5MB)</label>
-
-                            <input type="file" id="fileUpload" />
+                            <label>Upload Document Image</label>
+                            <button 
+                                type="button" 
+                                className="upload-trigger-btn"
+                                onClick={() => setShowUploadModal(true)}
+                            >
+                                {projectData.file ? "File Uploaded ✓" : "Upload File"}
+                            </button>
 
                             <div className="step-navigation">
-
                                 <button
                                     type="button"
                                     className="prev-btn"
@@ -424,47 +374,39 @@ const IdeaSubmissionForm = ({ student, problem }) => {
                                 >
                                     Previous
                                 </button>
-
                                 <button
                                     type="submit"
                                     className="submit-btn"
                                 >
                                     Submit Idea
                                 </button>
-
                             </div>
-
                         </div>
-
                     </form>
-
                 </div>
-
             </div>
 
             {showModal && (
-
                 <div className="modal" style={{ display: 'flex' }}>
-
                     <div className="modal-content">
-
                         <h3>✅ Idea Submitted Successfully!</h3>
-
                         <p>Your innovation has been recorded.</p>
-
                         <button
                             className="close-btn"
                             onClick={closeModal}
                         >
                             Close
                         </button>
-
                     </div>
-
                 </div>
-
             )}
 
+            {showUploadModal && (
+                <UploadIdeasDocImage
+                    onClose={() => setShowUploadModal(false)}
+                    onUploadSuccess={handleUploadSuccess}
+                />
+            )}
         </div>
     );
 };

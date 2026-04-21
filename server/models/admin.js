@@ -8,6 +8,10 @@ const adminSchema = new mongoose.Schema({
         trim: true
     },
 
+    profilePic : {
+        type : String
+    },
+
     collegeName: {
         type: String,
         required: true,

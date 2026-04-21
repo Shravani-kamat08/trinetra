@@ -307,6 +307,7 @@ const AdminDashboard = () => {
                             <table>
                                 <thead>
                                     <tr>
+                                        <th>Picture</th>
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Mobile No.</th>
@@ -317,6 +318,9 @@ const AdminDashboard = () => {
                                 <tbody>
                                     {studentsByAdmin.map((student) => (
                                         <tr key={student._id}>
+                                            <td>
+                                                <img className="adminDashboard-img" src={student.profilePic} alt="Img not found" width="50" height="50" />
+                                                </td>
                                             <td>{student.fullName}</td>
                                             <td>{student.email}</td>
                                             <td>{student.phone}</td>

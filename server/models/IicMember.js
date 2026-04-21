@@ -27,6 +27,9 @@ const iicMemberSchema = new mongoose.Schema(
         },
         experience: {
             type: Number // in years
+        },
+        profilePic : {
+            type: String
         }
     },
     { timestamps: true }

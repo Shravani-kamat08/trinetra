@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import UploadProfileImage from "../uploadImages/UploadProfileImage";
 
 const ProfileCard = ({
     form,
@@ -7,6 +8,13 @@ const ProfileCard = ({
     setShowProfileForm,
     updateProfile,
 }) => {
+    const [showUploadModal, setShowUploadModal] = useState(false);
+
+    const handleImageUploadSuccess = (url) => {
+        setForm({ ...form, profilePic: url });
+        setShowUploadModal(false);
+    };
+
     return (
         <div className="profile-card">
             <div className="card-header">
@@ -14,6 +22,18 @@ const ProfileCard = ({
             </div>
 
             <div className="card-body">
+                {/* PROFILE IMAGE DISPLAY */}
+                <div className="text-center mb-4">
+                    <img
+                        src={form.profilePic || "https://via.placeholder.com/100"}
+                        alt="Profile"
+                        className="rounded-circle mb-2"
+                        width="100"
+                        height="100"
+                        style={{ objectFit: "cover", borderRadius: "50%" }}
+                    />
+                </div>
+
                 {!showProfileForm ? (
                     /* DISPLAY MODE */
                     <div className="view-container">
@@ -45,6 +65,16 @@ const ProfileCard = ({
                 ) : (
                     /* EDIT MODE */
                     <div className="edit-container">
+                        <div className="text-center mb-3">
+                            <button
+                                type="button"
+                                className="btn btn-sm btn-outline-secondary"
+                                onClick={() => setShowUploadModal(true)}
+                            >
+                                Change Photo
+                            </button>
+                        </div>
+
                         <div className="input-grid">
                             <div className="input-group">
                                 <label>Full Name</label>
@@ -89,6 +119,14 @@ const ProfileCard = ({
                     </div>
                 )}
             </div>
+
+            {/* UPLOAD MODAL */}
+            {showUploadModal && (
+                <UploadProfileImage
+                    onClose={() => setShowUploadModal(false)}
+                    onUploadSuccess={handleImageUploadSuccess}
+                />
+            )}
         </div>
     );
 };

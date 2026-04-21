@@ -4,7 +4,7 @@ function UploadIdeasDocImage({ onClose, onUploadSuccess }) {
     return (
         <AnimatedImageUpload
             title="Ideas Document Image"
-            uploadEndpoint="/api/file/ideas-doc"
+            uploadEndpoint="/file/idea-docs"
             onClose={onClose}
             onUploadSuccess={onUploadSuccess}
         />
