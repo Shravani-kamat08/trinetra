@@ -13,33 +13,30 @@ import Home from "./components/Home";
 import IicTeam from "./components/iic/IicTeam"
 import IicForm from "./components/iic/IicForm"
 import PageNotFound from "./components/PageNotFound";
+import Contact from "./components/Contact";
 
 import api from "./util/api";
 import StudentDashboard from "./components/authContent/StudentDashboard";
+import About from "./components/About";
+import IicMembersPage from "./components/IicMembersPage";
 
 function App() {
   const [student, setStudent] = useState(null);
   const [admin, setAdmin] = useState(null)
+  const [adminId, setAdminId] = useState(localStorage.getItem('userId'));
   const [problem, setProblem] = useState(null);
 
-  useEffect(() => {
-    const adminId = localStorage.getItem('userId')
-
-    if (adminId) {
-      const getAdmin = async (id) => {
-        try {
-          const res = await api.get(`/admin/${id}`);
-          console.log(res.data)
-          if (res.data.success) {
-            setAdmin(res.data.data);
-          }
-        } catch (error) {
-          console.log("Student fetch error", error);
-        }
-      };
-      getAdmin(adminId);
+  const getAdmin = async (id) => {
+    try {
+      const res = await api.get(`/admin/${id}`);
+      console.log(res.data)
+      if (res.data.success) {
+        setAdmin(res.data.data);
+      }
+    } catch (error) {
+      console.log("Student fetch error", error);
     }
-  }, [])
+  };
 
   useEffect(() => {
     const studentId = localStorage.getItem("userId");
@@ -50,6 +47,7 @@ function App() {
           console.log(res.data.student)
           if (res.data.success) {
             setStudent(res.data.student);
+            getAdmin(res.data.student.adminId);
           }
         } catch (error) {
           console.log("Student fetch error", error);
@@ -60,7 +58,11 @@ function App() {
 
   }, []);
 
-
+  useEffect(() => {
+    if (adminId) {
+      getAdmin(adminId);
+    }
+  }, [])
 
   return (
     <div className="App">
@@ -74,17 +76,21 @@ function App() {
 
         <Route element={<ProtectRoute />}>
 
-          <Route path="/dashboard" element={<TrinetraPlatform />} />
+          <Route path="/dashboard" element={<TrinetraPlatform student={student} admin={admin} />} />
           <Route path="/problem-statement" element={<ProblemDetail student={student} admin={admin} setProblem={setProblem} />} />
           <Route path="/trinetra-platform" element={<TrinetraPlatform />} />
           <Route path="/idea-submission" element={<IdeaSubmissionForm student={student} problem={problem} />} />
           <Route path="/student-dashboard" element={<StudentDashboard />} />
           {/* <Route path="/iic-team-council" element={<IicTeam />} /> */}
+          <Route path="/iic-team-council" element={<IicMembersPage />} />
           <Route path="/iic-team-council/create" element={<IicForm />} />
+          
         </Route>
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<About />} />
 
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />

@@ -6,6 +6,7 @@ import api from '../../util/api';
 const ProblemDetail = ({ student, admin, setProblem }) => {
     console.log(student, admin)
     const navigate = useNavigate();
+    const userMode = localStorage.getItem("userMode");
     const [data, setData] = useState(null);
 
     useEffect(() => {
@@ -23,7 +24,7 @@ const ProblemDetail = ({ student, admin, setProblem }) => {
 
         if (student?.adminId) {
             getProblem(student.adminId);
-        }else{
+        } else {
             getProblem(admin?._id)
         }
 
@@ -119,13 +120,23 @@ const ProblemDetail = ({ student, admin, setProblem }) => {
 
                         <div className="main-btns">
 
-                            <button
-                                onClick={() => navigate('/idea-submission')}
-                                className="btn-primary-hero"
-                            >
-                                Drop your idea
-                            </button>
+                            {userMode == "student" && (
+                                <button
+                                    onClick={() => navigate('/idea-submission')}
+                                    className="btn-primary-hero"
+                                >
+                                    Drop your idea
+                                </button>
+                            )}
 
+                            {userMode != "student" && (
+                                <button
+                                    onClick={() => navigate('/dashboard')}
+                                    className="btn  btn-primary"
+                                >
+                                    Go to dashboard
+                                </button>
+                            )}
                         </div>
 
                     </div>

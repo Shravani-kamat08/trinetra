@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../App.css';
 
-const TrinetraPlatform = () => {
+const TrinetraPlatform = ({student, admin}) => {
+    console.log(student, admin)
     const navigate = useNavigate();
     const images = [
         "img/slide1.avif",
@@ -78,10 +79,13 @@ const TrinetraPlatform = () => {
 
                 <div className="contact-box">
                     <p>
-                        <strong>College Name:</strong> Dr. A. D. Shinde College of Engineering
+                        <strong>College Name : </strong> {admin?.collegeName}
                     </p>
-                    <p><strong>Address:</strong> A/P Bhadgaon, Kolhapur – 416502</p>
-                    <p><strong>Email:</strong> info@adshindecoengg.edu.in</p>
+                    <p className='capitilize'><strong>Admin : </strong> {admin?.name}</p>
+                    <p><strong>Email : </strong> {admin?.email}</p>
+                    {admin?.phone && (
+                        <p><strong>Phone :  </strong> {admin?.phone}</p>
+                    )}
                 </div>
             </section>
 

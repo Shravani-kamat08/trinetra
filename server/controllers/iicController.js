@@ -20,15 +20,45 @@ exports.addMember = async (req, res) => {
 // ✅ GET ALL MEMBERS
 exports.getAllMembers = async (req, res) => {
     try {
-        const members = await IICMember.find().sort({ createdAt: -1 });
+        const members = await IICMember.aggregate([
+            {
+                $addFields: {
+                    rolePriority: {
+                        $switch: {
+                            branches: [
+                                {
+                                    case: { $regexMatch: { input: "$role", regex: /president/i } },
+                                    then: 1
+                                },
+                                {
+                                    case: { $regexMatch: { input: "$role", regex: /vice president/i } },
+                                    then: 2
+                                }
+                            ],
+                            default: 3
+                        }
+                    }
+                }
+            },
+            {
+                $sort: {
+                    rolePriority: 1,   // President → Vice → Others
+                    createdAt: -1     // latest first inside same role
+                }
+            }
+        ]);
 
         res.json({
             success: true,
             count: members.length,
             members
         });
+
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 };
 

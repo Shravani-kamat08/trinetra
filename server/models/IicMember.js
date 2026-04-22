@@ -4,35 +4,36 @@ const iicMemberSchema = new mongoose.Schema(
     {
         role: {
             type: String,
-            required: true
+            required: true,
         },
         name: {
             type: String,
-            required: true
+            required: true,
         },
         email: {
-            type: String
+            type: String,
         },
         phone: {
-            type: String
+            type: String,
         },
         department: {
-            type: String
+            type: String,
         },
         designation: {
-            type: String
+            type: String,
+            required: true,
         },
         qualification: {
-            type: String
+            type: String,
         },
         experience: {
-            type: Number // in years
+            type: Number, // in years
         },
-        profilePic : {
-            type: String
-        }
+        profilePic: {
+            type: String,
+        },
     },
-    { timestamps: true }
+    { timestamps: true },
 );
 
 module.exports = mongoose.model("IICMember", iicMemberSchema);

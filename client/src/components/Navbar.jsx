@@ -26,7 +26,7 @@ const Navbar = ({ student, admin }) => {
 
                 {/* BRAND */}
                 <Link className="navbar-brand d-flex align-items-center" to="/">
-                    <span>🔺</span>
+                    <img src="/main-logo.png" alt="Default Avatar" className="rounded-circle" style={{ width: "40px", height: "40px", objectFit: "cover" }} />
                     <h2 className=" mb-0">
                         TRINETRA <span className="sub-title">Innovation Portal</span>
                     </h2>
@@ -70,6 +70,7 @@ const Navbar = ({ student, admin }) => {
                         )}
 
                         {/* DROPDOWN */}
+                        {userMode === "student" && (
                         <li className="nav-item dropdown">
                             <a
                                 className="nav-link dropdown-toggle"
@@ -82,27 +83,34 @@ const Navbar = ({ student, admin }) => {
 
                             <ul className="dropdown-menu">
                                 <li>
-                                    <a className="dropdown-item" href="#student">
+                                    <a className="dropdown-item" href="/iic-team-council/#student">
                                         Student Council
                                     </a>
                                 </li>
                                 <li>
-                                    <a className="dropdown-item" href="#faculty">
+                                    <a className="dropdown-item" href="/iic-team-council/#faculty">
                                         Faculty Council
                                     </a>
                                 </li>
                             </ul>
                         </li>
+                        )}
 
                         <li className="nav-item">
-                            <a className="nav-link" href="#contact">
+                            <a className="nav-link" href="/about">
+                                About
+                            </a>
+                        </li>
+
+                        <li className="nav-item">
+                            <a className="nav-link" href="/contact">
                                 Contact
                             </a>
                         </li>
-                    {/* </ul> */}
+                        {/* </ul> */}
 
-                    {/* RIGHT SIDE */}
-                    {/* <div className="d-flex align-items-center ml-10"> */}
+                        {/* RIGHT SIDE */}
+                        {/* <div className="d-flex align-items-center ml-10"> */}
 
                         {!userId ? (
                             <>
@@ -175,8 +183,8 @@ const Navbar = ({ student, admin }) => {
                                 )}
                             </div>
                         )}
-                    {/* </div> */}
-                        </ul>
+                        {/* </div> */}
+                    </ul>
                 </div>
             </div>
         </nav>

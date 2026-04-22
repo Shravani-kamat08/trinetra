@@ -15,7 +15,7 @@ const Home = () => {
                     <h2 className="hero-title fw-bold">TRINETRA</h2>
 
                     <p className="tagline">
-                        Turning Ideas into Innovation & Patents
+                        Turning Ideas into Innovation & Patentsd
                     </p>
 
                     <div className="login-options row justify-content-center">
@@ -84,27 +84,20 @@ const Home = () => {
             </section>
 
             {/* CONTACT */}
-            <section id="contact" className="section contact text-center">
-
+            {/* <section id="contact" className="section contact text-center"> 
                 <h2 className="fw-bold mb-4">Contact Us</h2>
-
                 <div className="contact-box mx-auto">
-
                     <p>
                         <strong>College Name:</strong> Dr. A. D. Shinde College of Engineering
                     </p>
-
                     <p>
                         <strong>Address:</strong> A/P Bhadgaon, Kolhapur – 416502
                     </p>
-
                     <p>
                         <strong>Email:</strong> info@adshindecoengg.edu.in
                     </p>
-
                 </div>
-
-            </section>
+             </section> */}
 
             <footer className="text-center py-3">
                 <p className="mb-0">© 2026 TRINETRA | IIC Innovation Platform</p>

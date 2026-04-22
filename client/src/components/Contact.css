@@ -1,0 +1,10 @@
+.icon-hover {
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.icon-hover:hover {
+    color: #198754;
+    /* Bootstrap green */
+    transform: scale(1.2);
+}
