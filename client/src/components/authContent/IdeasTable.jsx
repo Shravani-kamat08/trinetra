@@ -6,7 +6,7 @@ const IdeasTable = ({ ideas }) => {
     const getManualAvg = (marks = []) => {
         if (!marks || marks.length === 0) return 0;
         const total = marks.reduce((sum, m) => sum + m, 0);
-        return (total / marks.length).toFixed(1);
+        return (total).toFixed(1);
     };
 
     return (
@@ -35,13 +35,13 @@ const IdeasTable = ({ ideas }) => {
                                 ideas.map((idea, index) => {
 
                                     const manualAvg = getManualAvg(idea.manualMarks);
-                                    const total = (idea.systemMarks || 0) + parseFloat(manualAvg);
+                                    const total = (idea.autoPoints ) + parseFloat(manualAvg);
 
                                     return (
                                         <tr key={index}>
                                             <td>{idea.problemTitle || "-"}</td>
                                             <td>{idea.title || "-"}</td>
-                                            <td>{idea.systemMarks || 0}</td>
+                                            <td>{idea.autoPoints }</td>
                                             <td>{manualAvg}</td>
                                             <td className="total">{total}</td>
                                         </tr>

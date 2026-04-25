@@ -73,7 +73,7 @@ const IdeaModal = ({ idea, onClose, onUpdateMarks, isAdmin = true, updateStatus 
                         ⭐ {idea?.rating ?? 0}
                     </span>
                     <span className="badge score-summary">
-                        📊 Total Marks: {totalPoints}
+                        📊 AI analysis: {totalPoints * 2}%
                     </span>
                     {idea.approvedStatus !== "approved" && (
                         <button

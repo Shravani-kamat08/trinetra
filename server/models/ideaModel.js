@@ -73,8 +73,8 @@ const ideaSchema = new mongoose.Schema(
         },
 
         cost: {
-            type: Number,
-            default: 0,
+            type: String,
+            default: "0",
         },
 
         references: {
@@ -90,7 +90,6 @@ const ideaSchema = new mongoose.Schema(
             enum: ["approved", "drop", "reject", "starIdea"],
             default: "drop",
         },
-
         rating: {
             type: Number,
             default: 0,

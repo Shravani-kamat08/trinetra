@@ -30,6 +30,11 @@ const Sidebar = ({ setActiveSection, logout }) => {
                     <span>View Saved</span>
                 </li>
 
+                <li className="d-flex align-items-center" onClick={() => setActiveSection("profile")}>
+                    <i className="fa fa-user me-2"></i>
+                    <span>Profile</span>
+                </li>
+
                 <li className="d-flex align-items-center mt-auto" onClick={logout}>
                     <i className="fa fa-sign-out-alt me-2"></i>
                     <span>Logout</span>

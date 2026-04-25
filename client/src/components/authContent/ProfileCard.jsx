@@ -55,12 +55,6 @@ const ProfileCard = ({
                                 <p>{form.classYear || "—"}</p>
                             </div>
                         </div>
-
-                        <div className="card-footer">
-                            <button className="btn-edit" onClick={() => setShowProfileForm(true)}>
-                                Edit Profile
-                            </button>
-                        </div>
                     </div>
                 ) : (
                     /* EDIT MODE */
@@ -114,7 +108,7 @@ const ProfileCard = ({
 
                         <div className="card-footer-actions">
                             <button className="btn-save" onClick={updateProfile}>Save Changes</button>
-                            <button className="btn-cancel" onClick={() => setShowProfileForm(false)}>Cancel</button>
+                            <button className="btn-cancel mt-2" onClick={() => setShowProfileForm(false)}>Cancel</button>
                         </div>
                     </div>
                 )}

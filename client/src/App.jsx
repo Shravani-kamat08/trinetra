@@ -19,6 +19,7 @@ import api from "./util/api";
 import StudentDashboard from "./components/authContent/StudentDashboard";
 import About from "./components/About";
 import IicMembersPage from "./components/IicMembersPage";
+import UpdateAdmin from "./components/admin/UpdateAdmin";
 
 function App() {
   const [student, setStudent] = useState(null);
@@ -84,7 +85,6 @@ function App() {
           {/* <Route path="/iic-team-council" element={<IicTeam />} /> */}
           <Route path="/iic-team-council" element={<IicMembersPage />} />
           <Route path="/iic-team-council/create" element={<IicForm />} />
-          
         </Route>
 
         <Route path="/login" element={<Login />} />
@@ -94,6 +94,7 @@ function App() {
 
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/admin-dashboard/update" element={<UpdateAdmin />} />
 
         <Route
           path="*"

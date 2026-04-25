@@ -9,6 +9,7 @@ import ViewIdeas from "./ViewIdeas";
 import api from "../../util/api"
 import IdeaModal from "./IdeaModal";
 import IicTeam from "../iic/IicTeam";
+import AdminProfile from "./AdminProfile";
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -339,6 +340,10 @@ const AdminDashboard = () => {
 
                     {activeSection === "view" && (
                         <ViewIdeas ideas={ideas} />
+                    )}
+
+                    {activeSection === "profile" && (
+                        <AdminProfile />
                     )}
 
                 </div>
